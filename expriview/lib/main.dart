@@ -1,77 +1,74 @@
 import 'package:flutter/material.dart';
-import 'views/home_page.dart';
+import 'package:responsive_navigation_bar/responsive_navigation_bar.dart';
+import 'views/home_page.dart' as home;
 import 'views/results_page.dart';
-import 'views/start_interview_page.dart';
+import 'views/start_interview_page.dart' as interview;
 import 'views/profile_page.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(const MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Persistent Bottom Navigation Bar',
-      home: MyHomePage(),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
 
-  // List of widgets for each page
   final List<Widget> _pages = [
-    HomePage(),
-    StartInterviewPage(),
+    home.HomePage(),
+    interview.StartInterviewPage(),
     ResultsPage(),
     ProfilePage(),
   ];
 
-  void _onItemTapped(int index) {
+  void changeTab(int index) {
     setState(() {
-      _selectedIndex = index; // Update selected index
+      _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex, // Show the currently selected page
-        children: _pages, // List of pages
+    return MaterialApp(
+      title: 'Responsive Bottom Navigation Bar',
+      theme: ThemeData(
+        primaryColor: const Color.fromARGB(255, 255, 255, 255),
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: const Color.fromARGB(255, 188, 220, 245),
+          secondary: Colors.green,
+        ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
-            icon: Icon(Icons.home_filled),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
-            icon: Icon(Icons.camera),
-            label: 'Start',
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
-            icon: Icon(Icons.list),
-            label: 'Results',
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+      home: Scaffold(
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _pages,
+        ),
+        bottomNavigationBar: ResponsiveNavigationBar(
+          selectedIndex: _selectedIndex,
+          onTabChange: changeTab,
+          navigationBarButtons: <NavigationBarButton>[
+            NavigationBarButton(
+              text: 'Home',
+              icon:
+                  _selectedIndex == 0 ? Icons.home_filled : Icons.home_outlined,
+            ),
+            NavigationBarButton(
+              text: 'Start',
+              icon: _selectedIndex == 1 ? Icons.camera : Icons.camera_alt,
+            ),
+            NavigationBarButton(
+              text: 'Results',
+              icon: _selectedIndex == 2 ? Icons.list : Icons.list_alt,
+            ),
+            NavigationBarButton(
+              text: 'Profile',
+              icon: _selectedIndex == 3 ? Icons.person : Icons.person_outline,
+            ),
+          ],
+        ),
       ),
     );
   }
