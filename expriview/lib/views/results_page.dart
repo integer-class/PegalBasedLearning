@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class ResultsPage extends StatelessWidget {
+  const ResultsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Results'),
+        title: const Text('Results'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('This is the Results Page'),
       ),
     );
