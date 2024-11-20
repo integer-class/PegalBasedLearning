@@ -72,16 +72,20 @@ class _MyAppState extends State<MyApp> {
                   text: 'Home',
                 ),
                 GButton(
-                  icon: Icons.favorite_border,
-                  text: 'Likes',
+                  icon: Icons.view_list_rounded,
+                  text: 'Settings',
                 ),
                 GButton(
-                  icon: Icons.search,
-                  text: 'Search',
+                  icon: Icons.videocam,
+                  text: 'Recording',
                 ),
                 GButton(
-                  icon: Icons.settings,
-                  text: 'Setting',
+                  icon: Icons.assessment,
+                  text: 'Result',
+                ),
+                GButton(
+                  icon: Icons.person,
+                  text: 'Profile',
                 ),
               ],
             ),
