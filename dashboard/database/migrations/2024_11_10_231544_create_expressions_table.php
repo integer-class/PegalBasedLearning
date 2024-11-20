@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('expressions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('interviewee_id')->nullable()->constrained('interviewees')->cascadeOnDelete();
             $table->integer('sad');
             $table->integer('disgust');
             $table->integer('surprise');

@@ -43,7 +43,6 @@ class IntervieweeResource extends Resource
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('gender'),
                 Tables\Columns\TextColumn::make('email'),
-                Tables\Columns\TextColumn::make('expression_id'),
             ])
             ->filters([
                 //
