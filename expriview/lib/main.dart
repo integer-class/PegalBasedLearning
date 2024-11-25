@@ -4,7 +4,7 @@ import 'views/home_page.dart' as home;
 import 'views/results_page.dart';
 import 'views/result_detail.dart';
 import 'views/start_interview_page.dart' as interview;
-import 'views/profile_page.dart';
+import 'views/profile_page.dart' as profile;
 
 void main() => runApp(const MyApp());
 
@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
     const home.HomePage(),
     const interview.StartInterviewPage(),
     const ResultsPage(),
-    const ProfilePage(),
+    profile.ProfilePage(),
   ];
 
   void changeTab(int index) {
