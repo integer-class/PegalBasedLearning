@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Expression;
 
 class Interviewee extends Model
 {
@@ -14,5 +15,10 @@ class Interviewee extends Model
     public function expression(): HasOne
     {
         return $this->hasOne(Expression::class);
+    }
+
+    public function expressions()
+    {
+        return $this->hasMany(Expression::class);
     }
 }

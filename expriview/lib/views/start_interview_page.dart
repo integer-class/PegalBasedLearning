@@ -1,18 +1,8 @@
 import 'package:flutter/material.dart';
+import 'recording_page.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class StartInterviewPage extends StatelessWidget {
+  const StartInterviewPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +11,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'Next Session',
+          'Interview Sessions',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -48,27 +38,6 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today, color: Colors.blue),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.insert_drive_file),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '',
-          ),
-        ],
-      ),
     );
   }
 }
@@ -93,10 +62,12 @@ class SessionCard extends StatelessWidget {
             Text(name),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
+                Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => const StartInterviewPage()),
+                    builder: (context) => RecordingPage(
+                      intervieweeName: name,
+                    ),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -106,43 +77,6 @@ class SessionCard extends StatelessWidget {
               ),
               child: const Text('Start Interview'),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class StartInterviewPage extends StatelessWidget {
-  const StartInterviewPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Start Interview',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: false,
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFF8F8F8), Color(0xFFE0E0E0)],
-          ),
-        ),
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.circle, size: 100, color: Colors.blue),
           ],
         ),
       ),

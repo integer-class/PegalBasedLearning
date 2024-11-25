@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('gender', ['male', 'female']);
             $table->string('email')->unique();
             $table->string('cv')->nullable();
+            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'views/home_page.dart' as home;
+import 'views/home_page.dart';
 import 'views/results_page.dart';
-import 'views/start_interview_page.dart' as interview;
+import 'views/start_interview_page.dart';
 import 'views/profile_page.dart';
 
 void main() => runApp(const MyApp());
@@ -17,71 +17,52 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const home.HomePage(),
-    const interview.StartInterviewPage(),
+  static final List<Widget> _pages = [
+    const HomePage(),
+    const StartInterviewPage(),
     const ResultsPage(),
     const ProfilePage(),
   ];
 
-  void changeTab(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Responsive Bottom Navigation Bar',
+      title: 'ExpriView',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       home: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-          child: IndexedStack(
-            index: _selectedIndex,
-            children: _pages,
-          ),
-        ),
+        body: _pages[_selectedIndex],
         bottomNavigationBar: Container(
           height: 75,
-          width: 750,
-          // decoration: BoxDecoration(
-          //   borderRadius: BorderRadius.circular(20),
-          //   boxShadow: [
-          //     BoxShadow(
-          //       color: Colors.black.withOpacity(0.2), // Shadow color
-          //       spreadRadius: 5, // Spread radius
-          //       blurRadius: 7, // Blur radius
-          //       offset: const Offset(0, 3), // Offset for the shadow
-          //     ),
-          //   ],
-          // ),
           color: Colors.white,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
             child: GNav(
               backgroundColor: Colors.white,
-              color: Color(0xFF5A7590),
-              activeColor: Color(0xFF2E77AE),
-              tabBackgroundColor: Color(0xFFF2F7FF),
+              color: const Color(0xFF5A7590),
+              activeColor: const Color(0xFF2E77AE),
+              tabBackgroundColor: const Color(0xFFF2F7FF),
               gap: 10,
-              padding: EdgeInsets.all(20),
-              tabs: [
+              padding: const EdgeInsets.all(20),
+              selectedIndex: _selectedIndex,
+              onTabChange: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              tabs: const [
                 GButton(
                   icon: Icons.home,
                   text: 'Home',
                 ),
                 GButton(
                   icon: Icons.view_list_rounded,
-                  text: 'Settings',
-                ),
-                GButton(
-                  icon: Icons.videocam,
-                  text: 'Recording',
+                  text: 'Interview',
                 ),
                 GButton(
                   icon: Icons.assessment,
-                  text: 'Result',
+                  text: 'Results',
                 ),
                 GButton(
                   icon: Icons.person,

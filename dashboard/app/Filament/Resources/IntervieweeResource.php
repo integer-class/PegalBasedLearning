@@ -1,17 +1,13 @@
 <?php
 
 namespace App\Filament\Resources;
-
 use App\Filament\Resources\IntervieweeResource\Pages;
-use App\Filament\Resources\IntervieweeResource\RelationManagers;
 use App\Models\Interviewee;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class IntervieweeResource extends Resource
 {
@@ -49,6 +45,7 @@ class IntervieweeResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -70,6 +67,7 @@ class IntervieweeResource extends Resource
             'index' => Pages\ListInterviewees::route('/'),
             'create' => Pages\CreateInterviewee::route('/create'),
             'edit' => Pages\EditInterviewee::route('/{record}/edit'),
+            'view' => Pages\ViewInterviewee::route('/{record}'),
         ];
     }
 }
