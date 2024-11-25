@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:pie_chart/pie_chart.dart';
 import 'views/home_page.dart' as home;
 import 'views/results_page.dart';
 import 'views/result_detail.dart';
@@ -20,11 +19,17 @@ class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
 
   static final List<Widget> _pages = [
-    const HomePage(),
-    const StartInterviewPage(),
+    const home.HomePage(),
+    const interview.StartInterviewPage(),
     const ResultsPage(),
     const ProfilePage(),
   ];
+
+  void changeTab(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +46,8 @@ class _MyAppState extends State<MyApp> {
           color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
             child: GNav(
               backgroundColor: Colors.white,
-              color: const Color(0xFF5A7590),
-              activeColor: const Color(0xFF2E77AE),
-              tabBackgroundColor: const Color(0xFFF2F7FF),
               color: const Color(0xFF5A7590),
               activeColor: const Color(0xFF2E77AE),
               tabBackgroundColor: const Color(0xFFF2F7FF),
@@ -97,7 +97,7 @@ class PreviousSessionItem extends StatelessWidget {
     Colors.green,
   ];
 
-    PreviousSessionItem({
+  PreviousSessionItem({
     Key? key,
     required this.name,
     required this.date,
