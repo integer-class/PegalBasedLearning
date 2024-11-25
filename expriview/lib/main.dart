@@ -19,39 +19,35 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const home.HomePage(),
-    const interview.StartInterviewPage(),
+  static final List<Widget> _pages = [
+    const HomePage(),
+    const StartInterviewPage(),
     const ResultsPage(),
     const ProfilePage(),
   ];
 
-  void changeTab(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Responsive Bottom Navigation Bar',
+      title: 'ExpriView',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       home: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-          child: IndexedStack(
-            index: _selectedIndex,
-            children: _pages,
-          ),
-        ),
+        body: _pages[_selectedIndex],
         bottomNavigationBar: Container(
           height: 75,
           width: double.infinity,
           color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
             child: GNav(
               backgroundColor: Colors.white,
+              color: const Color(0xFF5A7590),
+              activeColor: const Color(0xFF2E77AE),
+              tabBackgroundColor: const Color(0xFFF2F7FF),
               color: const Color(0xFF5A7590),
               activeColor: const Color(0xFF2E77AE),
               tabBackgroundColor: const Color(0xFFF2F7FF),
@@ -69,7 +65,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 GButton(
                   icon: Icons.assessment,
-                  text: 'Result',
+                  text: 'Results',
                 ),
                 GButton(
                   icon: Icons.person,

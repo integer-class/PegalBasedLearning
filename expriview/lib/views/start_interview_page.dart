@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
+import 'recording_page.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class StartInterviewPage extends StatefulWidget {
+  const StartInterviewPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomePage(),
-    );
-  }
+  _StartInterviewPageState createState() => _StartInterviewPageState();
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class _StartInterviewPageState extends State<StartInterviewPage> {
+  List<String> intervieweeNames = ['Riko Saputra', 'Maya Sari', 'Adi Wirawan'];
+  List<String> filteredNames = [];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredNames = intervieweeNames; // Initially, show all names
+  }
+
+  void _searchInterviewee(String query) {
+    setState(() {
+      filteredNames = intervieweeNames
+          .where((name) => name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +33,27 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'Next Session',
+          'Interview Sessions',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            color: const Color.fromARGB(255, 0, 0, 0), // Set the color of the search icon to blue
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: IntervieweeSearchDelegate(
+                  searchInterviewee: _searchInterviewee,
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -39,35 +65,8 @@ class HomePage extends StatelessWidget {
         ),
         child: ListView(
           padding: const EdgeInsets.all(16.0),
-          children: const [
-            SessionCard(name: 'Riko Saputra'),
-            SizedBox(height: 16.0),
-            SessionCard(name: 'Maya Sari'),
-            SizedBox(height: 16.0),
-            SessionCard(name: 'Adi Wirawan'),
-          ],
+          children: filteredNames.map((name) => SessionCard(name: name)).toList(),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today, color: Colors.blue),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.insert_drive_file),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '',
-          ),
-        ],
       ),
     );
   }
@@ -93,13 +92,17 @@ class SessionCard extends StatelessWidget {
             Text(name),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
+                Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => const StartInterviewPage()),
+                    builder: (context) => RecordingPage(
+                      intervieweeName: name,
+                    ),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // Set the button color to blue
+                foregroundColor: Colors.white, // Set the text color to white
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -113,39 +116,62 @@ class SessionCard extends StatelessWidget {
   }
 }
 
-class StartInterviewPage extends StatelessWidget {
-  const StartInterviewPage({super.key});
+class IntervieweeSearchDelegate extends SearchDelegate {
+  final Function(String) searchInterviewee;
+
+  IntervieweeSearchDelegate({required this.searchInterviewee});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Start Interview',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: false,
+  String? get searchFieldLabel => 'Search Interviewees';
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+          searchInterviewee(query); // Reset to all names
+        },
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFF8F8F8), Color(0xFFE0E0E0)],
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    searchInterviewee(query); // Filter the list based on the query
+    return ListView(
+      children: [
+        // You can show the filtered results here, but we are handling it in the main page
+      ],
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return ListView(
+      children: [
+        // Suggestion list will show matching names dynamically as you type
+        for (var name in ['Riko Saputra', 'Maya Sari', 'Adi Wirawan'])
+          ListTile(
+            title: Text(name),
+            onTap: () {
+              query = name;
+              searchInterviewee(name);
+              close(context, null);
+            },
           ),
-        ),
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.circle, size: 100, color: Colors.blue),
-          ],
-        ),
-      ),
+      ],
     );
   }
 }
