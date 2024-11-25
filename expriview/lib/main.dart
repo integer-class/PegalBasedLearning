@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:pie_chart/pie_chart.dart';
 import 'views/home_page.dart' as home;
 import 'views/results_page.dart';
+import 'views/result_detail.dart';
 import 'views/start_interview_page.dart' as interview;
 import 'views/profile_page.dart';
 
@@ -44,36 +46,22 @@ class _MyAppState extends State<MyApp> {
         ),
         bottomNavigationBar: Container(
           height: 75,
-          width: 750,
-          // decoration: BoxDecoration(
-          //   borderRadius: BorderRadius.circular(20),
-          //   boxShadow: [
-          //     BoxShadow(
-          //       color: Colors.black.withOpacity(0.2), // Shadow color
-          //       spreadRadius: 5, // Spread radius
-          //       blurRadius: 7, // Blur radius
-          //       offset: const Offset(0, 3), // Offset for the shadow
-          //     ),
-          //   ],
-          // ),
+          width: double.infinity,
           color: Colors.white,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
             child: GNav(
               backgroundColor: Colors.white,
-              color: Color(0xFF5A7590),
-              activeColor: Color(0xFF2E77AE),
-              tabBackgroundColor: Color(0xFFF2F7FF),
+              color: const Color(0xFF5A7590),
+              activeColor: const Color(0xFF2E77AE),
+              tabBackgroundColor: const Color(0xFFF2F7FF),
               gap: 10,
-              padding: EdgeInsets.all(20),
-              tabs: [
+              padding: const EdgeInsets.all(20),
+              onTabChange: changeTab,
+              tabs: const [
                 GButton(
                   icon: Icons.home,
                   text: 'Home',
-                ),
-                GButton(
-                  icon: Icons.view_list_rounded,
-                  text: 'Settings',
                 ),
                 GButton(
                   icon: Icons.videocam,
@@ -90,6 +78,68 @@ class _MyAppState extends State<MyApp> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class PreviousSessionItem extends StatelessWidget {
+  final String name;
+  final String date;
+
+  // Example dataMap and colorList for the pie chart
+  final Map<String, double> dataMap = {
+    "Segment A": 40,
+    "Segment B": 30,
+    "Segment C": 30,
+  };
+
+  final List<Color> colorList = [
+    Colors.blue,
+    Colors.red,
+    Colors.green,
+  ];
+
+    PreviousSessionItem({
+    Key? key,
+    required this.name,
+    required this.date,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(date, style: TextStyle(color: Colors.grey)),
+              ],
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to ResultDetail when the button is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ResultDetail(
+                      name: name,
+                      dataMap: dataMap, // Pass the dataMap
+                      colorList: colorList, // Pass the colorList
+                    ),
+                  ),
+                );
+              },
+              child: const Text('Detail'),
+            ),
+          ],
         ),
       ),
     );
