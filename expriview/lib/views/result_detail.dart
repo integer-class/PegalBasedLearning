@@ -7,11 +7,11 @@ class ResultDetail extends StatelessWidget {
   final List<Color> colorList; // Updated to use colorList
 
   const ResultDetail({
-    Key? key,
+    super.key,
     required this.name,
     required this.dataMap, // Added dataMap
     required this.colorList, // Added colorList
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class ResultDetail extends StatelessWidget {
           height: 300,
           child: PieChart(
             dataMap: dataMap,
-            animationDuration: Duration(milliseconds: 800),
+            animationDuration: const Duration(milliseconds: 800),
             chartLegendSpacing: 32,
             chartRadius: MediaQuery.of(context).size.width / 3.2,
             colorList: colorList,
@@ -33,7 +33,7 @@ class ResultDetail extends StatelessWidget {
             chartType: ChartType.ring,
             ringStrokeWidth: 32,
             centerText: "HYBRID",
-            legendOptions: LegendOptions(
+            legendOptions: const LegendOptions(
               showLegendsInRow: false,
               legendPosition: LegendPosition.right,
               showLegends: true,
@@ -42,7 +42,7 @@ class ResultDetail extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            chartValuesOptions: ChartValuesOptions(
+            chartValuesOptions: const ChartValuesOptions(
               showChartValueBackground: true,
               showChartValues: true,
               showChartValuesInPercentage: false,

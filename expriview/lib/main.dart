@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
     const home.HomePage(),
     const interview.StartInterviewPage(),
     const ResultsPage(),
-    profile.ProfilePage(),
+    const profile.ProfilePage(),
   ];
 
   void changeTab(int index) {
@@ -98,10 +98,10 @@ class PreviousSessionItem extends StatelessWidget {
   ];
 
   PreviousSessionItem({
-    Key? key,
+    super.key,
     required this.name,
     required this.date,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +115,10 @@ class PreviousSessionItem extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                Text(date, style: TextStyle(color: Colors.grey)),
+                Text(name,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(date, style: const TextStyle(color: Colors.grey)),
               ],
             ),
             ElevatedButton(

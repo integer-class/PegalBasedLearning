@@ -12,32 +12,9 @@ class HomePage extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              // Top Bar
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '9:41',
-                      style: TextStyle(color: Colors.black.withOpacity(0.5)),
-                    ),
-                    const Row(
-                      children: [
-                        Icon(Icons.signal_cellular_alt, color: Colors.black),
-                        SizedBox(width: 4),
-                        Icon(Icons.wifi, color: Colors.black),
-                        SizedBox(width: 4),
-                        Icon(Icons.battery_full, color: Colors.black),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
               // Greeting
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
+                padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -109,7 +86,8 @@ class HomePage extends StatelessWidget {
                               onPressed: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => const StartInterviewPage(),
+                                    builder: (context) =>
+                                        const StartInterviewPage(),
                                   ),
                                 );
                               },

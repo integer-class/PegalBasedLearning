@@ -10,9 +10,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Results Page Example',
-      home: const ResultsPage(),
+      home: ResultsPage(),
     );
   }
 }
@@ -27,7 +27,7 @@ class ResultsPage extends StatelessWidget {
         title: const Text('Results'),
       ),
       body: ListView(
-        children: [
+        children: const [
           PreviousSessionItem(
             name: 'Riko Saputra',
             date: 'Rabu, 15 Oktober 2025, 14:00 - 14:30',
@@ -48,16 +48,17 @@ class PreviousSessionItem extends StatelessWidget {
   final String date;
 
   const PreviousSessionItem({
-    Key? key,
+    super.key,
     required this.name,
     required this.date,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Margin for the item
+        margin: const EdgeInsets.symmetric(
+            horizontal: 16.0, vertical: 8.0), // Margin for the item
         decoration: BoxDecoration(
           color: Colors.white, // Background color of the item
           borderRadius: BorderRadius.circular(8.0), // Rounded corners
@@ -101,12 +102,12 @@ class PreviousSessionItem extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => ResultDetail(
                         name: name,
-                        dataMap: {
+                        dataMap: const {
                           "Segment A": 40,
                           "Segment B": 30,
                           "Segment C": 30,
                         }, // Example dataMap
-                        colorList: [
+                        colorList: const [
                           Colors.blue,
                           Colors.red,
                           Colors.green,
@@ -126,11 +127,11 @@ class PreviousSessionItem extends StatelessWidget {
 }
 
 class StackedBar extends StatelessWidget {
-  const StackedBar({Key? key}) : super(key: key);
+  const StackedBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 300, // Width of the entire bar
       height: 30, // Height of the bar
       child: Row(

@@ -43,7 +43,8 @@ class _StartInterviewPageState extends State<StartInterviewPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            color: const Color.fromARGB(255, 0, 0, 0), // Set the color of the search icon to blue
+            color: const Color.fromARGB(
+                255, 0, 0, 0), // Set the color of the search icon to blue
             onPressed: () {
               showSearch(
                 context: context,
@@ -65,7 +66,8 @@ class _StartInterviewPageState extends State<StartInterviewPage> {
         ),
         child: ListView(
           padding: const EdgeInsets.all(16.0),
-          children: filteredNames.map((name) => SessionCard(name: name)).toList(),
+          children:
+              filteredNames.map((name) => SessionCard(name: name)).toList(),
         ),
       ),
     );
@@ -151,7 +153,7 @@ class IntervieweeSearchDelegate extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     searchInterviewee(query); // Filter the list based on the query
     return ListView(
-      children: [
+      children: const [
         // You can show the filtered results here, but we are handling it in the main page
       ],
     );
