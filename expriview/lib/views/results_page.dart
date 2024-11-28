@@ -1,22 +1,6 @@
 import 'package:expriview/views/result_detail.dart';
 import 'package:flutter/material.dart'; // Ensure you import the ResultDetail class
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Results Page Example',
-      home: const ResultsPage(),
-    );
-  }
-}
-
 class ResultsPage extends StatelessWidget {
   const ResultsPage({super.key});
 
@@ -102,15 +86,21 @@ class PreviousSessionItem extends StatelessWidget {
                       builder: (context) => ResultDetail(
                         name: name,
                         dataMap: {
-                          "Segment A": 40,
-                          "Segment B": 30,
-                          "Segment C": 30,
-                        }, // Example dataMap
+                          "Segment A": 27.0, // Updated to match StackedBar
+                          "Segment B": 28.0,
+                          "Segment C": 26.0,
+                          "Segment D": 11.0,
+                          "Segment E": 20.0,
+                          "Segment F": 10.0,
+                        }, // Updated dataMap
                         colorList: [
-                          Colors.blue,
+                          Colors.yellow, // Updated to match StackedBar
+                          Colors.purple,
                           Colors.red,
-                          Colors.green,
-                        ], // Example colorList
+                          Colors.pink,
+                          Colors.orange,
+                          Colors.blue,
+                        ], // Updated colorList
                       ),
                     ),
                   );
@@ -132,7 +122,7 @@ class StackedBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 300, // Width of the entire bar
-      height: 30, // Height of the bar
+      height: 10, // Height of the bar
       child: Row(
         children: [
           Flexible(
