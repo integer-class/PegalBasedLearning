@@ -25,24 +25,24 @@ class ResultDetail extends StatelessWidget {
           height: 300,
           child: PieChart(
             dataMap: dataMap,
-            animationDuration: Duration(milliseconds: 800),
+            animationDuration: const Duration(milliseconds: 800),
             chartLegendSpacing: 32,
             chartRadius: MediaQuery.of(context).size.width / 3.2,
             colorList: colorList,
             initialAngleInDegree: 0,
             chartType: ChartType.ring,
             ringStrokeWidth: 32,
-            centerText: "HYBRID",
+            centerText: "Emotion",
             legendOptions: LegendOptions(
               showLegendsInRow: false,
               legendPosition: LegendPosition.right,
               showLegends: true,
               legendShape: BoxShape.circle,
-              legendTextStyle: TextStyle(
+              legendTextStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),
-            chartValuesOptions: ChartValuesOptions(
+            chartValuesOptions: const ChartValuesOptions(
               showChartValueBackground: true,
               showChartValues: true,
               showChartValuesInPercentage: false,
