@@ -83,61 +83,68 @@ class _MyAppState extends State<MyApp> {
 class PreviousSessionItem extends StatelessWidget {
   final String name;
   final String date;
+  final Map<String, double> dataMap; // Added dataMap as a parameter
+  final List<Color> colorList; // Added colorList as a parameter
 
-  // Example dataMap and colorList for the pie chart
-  final Map<String, double> dataMap = {
-    "Segment A": 40,
-    "Segment B": 30,
-    "Segment C": 30,
-  };
-
-  final List<Color> colorList = [
-    Colors.blue,
-    Colors.red,
-    Colors.green,
-  ];
-
-  PreviousSessionItem({
-    super.key,
+  const PreviousSessionItem({
+    Key? key,
     required this.name,
     required this.date,
-  });
+    required this.dataMap,
+    required this.colorList,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-                Text(date, style: const TextStyle(color: Colors.grey)),
-              ],
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to ResultDetail when the button is pressed
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ResultDetail(
-                      name: name,
-                      dataMap: dataMap, // Pass the dataMap
-                      colorList: colorList, // Pass the colorList
-                    ),
-                  ),
-                );
-              },
-              child: const Text('Detail'),
+    return GestureDetector(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
             ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              Text(date),
+              const SizedBox(height: 8.0),
+              TextButton(
+                onPressed: () {
+                  // Navigate to ResultDetail when the button is pressed
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ResultDetail(
+                        name: name,
+                        dataMap: dataMap, // Pass the dataMap to ResultDetail
+                        colorList:
+                            colorList, // Pass the colorList to ResultDetail
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Detail'),
+              ),
+            ],
+          ),
         ),
       ),
     );

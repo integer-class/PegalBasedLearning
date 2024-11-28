@@ -1,22 +1,6 @@
 import 'package:expriview/views/result_detail.dart';
 import 'package:flutter/material.dart'; // Ensure you import the ResultDetail class
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Results Page Example',
-      home: ResultsPage(),
-    );
-  }
-}
-
 class ResultsPage extends StatelessWidget {
   const ResultsPage({super.key});
 
@@ -102,16 +86,24 @@ class PreviousSessionItem extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => ResultDetail(
                         name: name,
-                        dataMap: const {
-                          "Segment A": 40,
-                          "Segment B": 30,
-                          "Segment C": 30,
-                        }, // Example dataMap
-                        colorList: const [
-                          Colors.blue,
-                          Colors.red,
+                        dataMap: {
+                          "Happy": 25.0, // Updated to match StackedBar
+                          "Disgust": 26.0,
+                          "Angry": 24.0,
+                          "Fear": 11.0,
+                          "Neutral": 18.0,
+                          "Sad": 10.0,
+                          "Surprise": 12.0,
+                        }, // Updated dataMap
+                        colorList: [
+                          Colors.yellow, // Updated to match StackedBar
                           Colors.green,
-                        ], // Example colorList
+                          Colors.red,
+                          Colors.black,
+                          Colors.grey,
+                          Colors.blue,
+                          Colors.orange,
+                        ], // Updated colorList
                       ),
                     ),
                   );
@@ -133,32 +125,36 @@ class StackedBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 300, // Width of the entire bar
-      height: 30, // Height of the bar
+      height: 10, // Height of the bar
       child: Row(
         children: [
           Flexible(
-            flex: 27,
+            flex: 25,
             child: Container(color: Colors.yellow),
           ),
           Flexible(
-            flex: 28,
-            child: Container(color: Colors.purple),
+            flex: 26,
+            child: Container(color: Colors.green),
           ),
           Flexible(
-            flex: 26,
+            flex: 24,
             child: Container(color: Colors.red),
           ),
           Flexible(
             flex: 11,
-            child: Container(color: Colors.pink),
+            child: Container(color: Colors.black),
           ),
           Flexible(
-            flex: 20,
-            child: Container(color: Colors.orange),
+            flex: 18,
+            child: Container(color: Colors.grey),
           ),
           Flexible(
             flex: 10,
             child: Container(color: Colors.blue),
+          ),
+          Flexible(
+            flex: 12,
+            child: Container(color: Colors.orange),
           ),
         ],
       ),
