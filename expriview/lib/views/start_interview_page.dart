@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'recording_page.dart';
+import '../services/api_service.dart';
 
 class StartInterviewPage extends StatefulWidget {
   const StartInterviewPage({super.key});
@@ -7,21 +8,46 @@ class StartInterviewPage extends StatefulWidget {
   @override
   _StartInterviewPageState createState() => _StartInterviewPageState();
 }
-
 class _StartInterviewPageState extends State<StartInterviewPage> {
-  List<String> intervieweeNames = ['Riko Saputra', 'Maya Sari', 'Adi Wirawan'];
-  List<String> filteredNames = [];
+  final ApiService _apiService = ApiService();
+  List<Interviewee> interviewees = [];
+  List<Interviewee> filteredInterviewees = [];
+  bool isLoading = true;
+  String? error;
 
   @override
   void initState() {
     super.initState();
-    filteredNames = intervieweeNames; // Initially, show all names
+    _loadInterviewees();
+  }
+
+  Future<void> _loadInterviewees() async {
+    try {
+      setState(() {
+        isLoading = true;
+        error = null;
+      });
+      
+      final fetchedInterviewees = await _apiService.getInterviewees();
+      setState(() {
+        interviewees = fetchedInterviewees;
+        filteredInterviewees = fetchedInterviewees;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+      print('Error loading interviewees: $e');
+    }
   }
 
   void _searchInterviewee(String query) {
     setState(() {
-      filteredNames = intervieweeNames
-          .where((name) => name.toLowerCase().contains(query.toLowerCase()))
+      filteredInterviewees = interviewees
+          .where((interviewee) => 
+              interviewee.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -50,6 +76,7 @@ class _StartInterviewPageState extends State<StartInterviewPage> {
                 context: context,
                 delegate: IntervieweeSearchDelegate(
                   searchInterviewee: _searchInterviewee,
+                  interviewees: interviewees,
                 ),
               );
             },
@@ -67,7 +94,13 @@ class _StartInterviewPageState extends State<StartInterviewPage> {
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children:
-              filteredNames.map((name) => SessionCard(name: name)).toList(),
+              filteredInterviewees.map((interviewee) => SessionCard(
+                id: interviewee.id,
+                name: interviewee.name,
+                gender: interviewee.gender,
+                email: interviewee.email,
+                status: interviewee.status,
+              )).toList(),
         ),
       ),
     );
@@ -75,9 +108,20 @@ class _StartInterviewPageState extends State<StartInterviewPage> {
 }
 
 class SessionCard extends StatelessWidget {
+  final int id;
   final String name;
+  final String gender;
+  final String email;
+  final String status;
 
-  const SessionCard({super.key, required this.name});
+  const SessionCard({
+    super.key,
+    required this.id,
+    required this.name,
+    required this.gender,
+    required this.email,
+    required this.status,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,29 +131,94 @@ class SessionCard extends StatelessWidget {
       ),
       elevation: 2.0,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(name),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => RecordingPage(
-                      intervieweeName: name,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        email,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: status == 'accepted' ? Colors.green[100] : Colors.orange[100],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    status.toUpperCase(),
+                    style: TextStyle(
+                      color: status == 'accepted' ? Colors.green[800] : Colors.orange[800],
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue, // Set the button color to blue
-                foregroundColor: Colors.white, // Set the text color to white
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
                 ),
-              ),
-              child: const Text('Start Interview'),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      gender == 'male' ? Icons.male : Icons.female,
+                      color: Colors.grey[600],
+                      size: 20,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      gender.toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => RecordingPage(
+                          // intervieweeId: id,
+                          intervieweeName: name,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text('Start Interview'),
+                ),
+              ],
             ),
           ],
         ),
@@ -120,8 +229,12 @@ class SessionCard extends StatelessWidget {
 
 class IntervieweeSearchDelegate extends SearchDelegate {
   final Function(String) searchInterviewee;
+  final List<Interviewee> interviewees;
 
-  IntervieweeSearchDelegate({required this.searchInterviewee});
+  IntervieweeSearchDelegate({
+    required this.searchInterviewee,
+    required this.interviewees,
+  });
 
   @override
   String? get searchFieldLabel => 'Search Interviewees';
@@ -133,7 +246,7 @@ class IntervieweeSearchDelegate extends SearchDelegate {
         icon: const Icon(Icons.clear),
         onPressed: () {
           query = '';
-          searchInterviewee(query); // Reset to all names
+          searchInterviewee(query);
         },
       ),
     ];
@@ -161,19 +274,29 @@ class IntervieweeSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return ListView(
-      children: [
-        // Suggestion list will show matching names dynamically as you type
-        for (var name in ['Riko Saputra', 'Maya Sari', 'Adi Wirawan'])
-          ListTile(
-            title: Text(name),
-            onTap: () {
-              query = name;
-              searchInterviewee(name);
-              close(context, null);
-            },
+    final suggestions = interviewees
+        .where((interviewee) =>
+            interviewee.name.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    return ListView.builder(
+      itemCount: suggestions.length,
+      itemBuilder: (context, index) {
+        final interviewee = suggestions[index];
+        return ListTile(
+          leading: Icon(
+            interviewee.gender == 'male' ? Icons.male : Icons.female,
+            color: Colors.grey[600],
           ),
-      ],
+          title: Text(interviewee.name),
+          subtitle: Text(interviewee.email),
+          onTap: () {
+            query = interviewee.name;
+            searchInterviewee(query);
+            close(context, null);
+          },
+        );
+      },
     );
   }
 }

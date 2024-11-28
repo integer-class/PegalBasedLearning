@@ -47,7 +47,40 @@ class _RecordingPageState extends State<RecordingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: CameraPreview(_controller!),
+        child: Column(
+          children: [
+            // Header with interviewee name
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              color: Colors.blue,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Interview with ${widget.intervieweeName}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Camera preview
+            Expanded(
+              child: _controller?.value.isInitialized ?? false
+                  ? CameraPreview(_controller!)
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
