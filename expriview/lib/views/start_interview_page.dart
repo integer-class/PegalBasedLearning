@@ -203,7 +203,7 @@ class SessionCard extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => RecordingPage(
-                          // intervieweeId: id,
+                          intervieweeId: id,
                           intervieweeName: name,
                         ),
                       ),
