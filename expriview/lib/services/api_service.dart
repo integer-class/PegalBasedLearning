@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:io';
 
 class Interviewee {
   final int id;
@@ -134,6 +133,22 @@ class ApiService {
       }
     } catch (e) {
       print('Error ending session: $e');
+      throw e;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchResults() async {
+    try {
+      final connection = await http.get(Uri.parse('$baseUrl/results'));
+      
+      if (connection.statusCode == 200) {
+        final data = json.decode(connection.body);
+        return List<Map<String, dynamic>>.from(data['data']);
+      } else {
+        throw Exception('Failed to load results');
+      }
+    } catch (e) {
+      print('Error fetching results: $e');
       throw e;
     }
   }

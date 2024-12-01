@@ -1,8 +1,12 @@
 import 'package:expriview/views/result_detail.dart';
 import 'package:flutter/material.dart'; // Ensure you import the ResultDetail class
+import 'package:expriview/services/api_service.dart';
+
 
 class ResultsPage extends StatelessWidget {
-  const ResultsPage({super.key});
+  final ApiService apiService = ApiService();
+  
+  ResultsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,18 +14,39 @@ class ResultsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Results'),
       ),
-      body: ListView(
-        children: const [
-          PreviousSessionItem(
-            name: 'Riko Saputra',
-            date: 'Rabu, 15 Oktober 2025, 14:00 - 14:30',
-          ),
-          PreviousSessionItem(
-            name: 'Maya Sari',
-            date: 'Selasa, 30 September 2025, 13:00 - 13:30',
-          ),
-          // You can add more PreviousSessionItems here
-        ],
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: apiService.fetchResults(), // Updated to use instance method
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No results found'));
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              final result = snapshot.data![index];
+              return PreviousSessionItem(
+                name: result['name'] ?? 'Unknown',
+                date: result['date'] ?? 'No date',
+                emotionValues: {
+                  "Happy": (result['happy'] ?? 0).toDouble(),
+                  "Disgust": (result['disgust'] ?? 0).toDouble(),
+                  "Angry": (result['angry'] ?? 0).toDouble(),
+                  "Fear": (result['fear'] ?? 0).toDouble(),
+                  "Neutral": (result['neutral'] ?? 0).toDouble(),
+                  "Sad": (result['sad'] ?? 0).toDouble(),
+                  "Surprise": (result['surprise'] ?? 0).toDouble(),
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -30,11 +55,13 @@ class ResultsPage extends StatelessWidget {
 class PreviousSessionItem extends StatelessWidget {
   final String name;
   final String date;
+  final Map<String, double> emotionValues;
 
   const PreviousSessionItem({
     super.key,
     required this.name,
     required this.date,
+    required this.emotionValues,
   });
 
   @override
@@ -74,36 +101,27 @@ class PreviousSessionItem extends StatelessWidget {
                     const SizedBox(height: 8.0),
                     Text(date),
                     const SizedBox(height: 8.0), // Space before the bar chart
-                    const StackedBar(), // Add the stacked bar chart here
+                    StackedBar(emotionValues: emotionValues), // Pass values to StackedBar
                   ],
                 ),
               ),
               TextButton(
                 onPressed: () {
-                  // Navigate to ResultDetail when the button is pressed
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ResultDetail(
                         name: name,
-                        dataMap: {
-                          "Happy": 25.0, // Updated to match StackedBar
-                          "Disgust": 26.0,
-                          "Angry": 24.0,
-                          "Fear": 11.0,
-                          "Neutral": 18.0,
-                          "Sad": 10.0,
-                          "Surprise": 12.0,
-                        }, // Updated dataMap
-                        colorList: [
-                          Colors.yellow, // Updated to match StackedBar
+                        dataMap: emotionValues, // Use the passed values
+                        colorList: const [
+                          Colors.yellow,
                           Colors.green,
                           Colors.red,
                           Colors.black,
                           Colors.grey,
                           Colors.blue,
                           Colors.orange,
-                        ], // Updated colorList
+                        ],
                       ),
                     ),
                   );
@@ -119,41 +137,46 @@ class PreviousSessionItem extends StatelessWidget {
 }
 
 class StackedBar extends StatelessWidget {
-  const StackedBar({super.key});
+  final Map<String, double> emotionValues;
+
+  const StackedBar({
+    super.key,
+    required this.emotionValues,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 300, // Width of the entire bar
-      height: 10, // Height of the bar
+      width: 300,
+      height: 10,
       child: Row(
         children: [
           Flexible(
-            flex: 25,
+            flex: emotionValues["Happy"]!.toInt(),
             child: Container(color: Colors.yellow),
           ),
           Flexible(
-            flex: 26,
+            flex: emotionValues["Disgust"]!.toInt(),
             child: Container(color: Colors.green),
           ),
           Flexible(
-            flex: 24,
+            flex: emotionValues["Angry"]!.toInt(),
             child: Container(color: Colors.red),
           ),
           Flexible(
-            flex: 11,
+            flex: emotionValues["Fear"]!.toInt(),
             child: Container(color: Colors.black),
           ),
           Flexible(
-            flex: 18,
+            flex: emotionValues["Neutral"]!.toInt(),
             child: Container(color: Colors.grey),
           ),
           Flexible(
-            flex: 10,
+            flex: emotionValues["Sad"]!.toInt(),
             child: Container(color: Colors.blue),
           ),
           Flexible(
-            flex: 12,
+            flex: emotionValues["Surprise"]!.toInt(),
             child: Container(color: Colors.orange),
           ),
         ],

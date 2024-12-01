@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
   static final List<Widget> _pages = [
     const home.HomePage(),
     const interview.StartInterviewPage(),
-    const ResultsPage(),
+    ResultsPage(),
     const profile.ProfilePage(),
   ];
 

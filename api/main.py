@@ -1,10 +1,7 @@
 from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
 import numpy as np
 
 import tensorflow as tf
@@ -12,15 +9,12 @@ from tensorflow.keras.layers import Conv2D
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
 import numpy as np
 
-import requests
 import os
 
 import mysql.connector
 from mysql.connector import Error
 
 import asyncio
-from collections import deque
-import time
 from datetime import datetime
 
 app = FastAPI()
@@ -34,27 +28,35 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-items = []
+# Global variables to store session data
+session_emotions = {
+    'angry': 0,
+    'disgust': 0,
+    'fear': 0,
+    'happy': 0,
+    'sad': 0,
+    'surprise': 0,
+    'neutral': 0
+}
+session_active = False
 
+# Import the model
 # Define the custom layer, `StandardizedConv2DWithOverride`
-# This is a placeholder implementation; replace it with the actual code if available
 class StandardizedConv2DWithOverride(Conv2D):
     def __init__(self, *args, **kwargs):
         super(StandardizedConv2DWithOverride, self).__init__(*args, **kwargs)
-
     def call(self, inputs):
         # Placeholder for any custom processing
         return super(StandardizedConv2DWithOverride, self).call(inputs)
-
 # Get the absolute path to the model file
 current_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(current_dir, "modelv2.hdf5")
-
+model_path = os.path.join(current_dir, "modelv.hdf5")
 # Load the model with absolute path
 model = tf.keras.models.load_model(model_path, custom_objects={'StandardizedConv2DWithOverride': StandardizedConv2DWithOverride})
 print(f"Model loaded successfully from: {model_path}")
 
-# Create a queue for processing images
+
+# Create a queue for processing images, this is used incase the server isn't fast enough to process the images
 processing_queue = asyncio.Queue()
 is_processing = False
 
@@ -103,112 +105,6 @@ async def process_image_from_queue():
             is_processing = False
             await asyncio.sleep(0.1)
 
-@app.get("/")
-def root():
-    return 'this is a place holder'
-
-@app.post("/upload/")
-async def upload_file(file: UploadFile = File(...)):
-    try:
-        save_path = "./uploaded_files/image.jpg"
-
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
-
-        contents = await file.read()
-        with open(save_path, "wb") as f:
-            f.write(contents)
-        
-    except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=400)
-
-    # Path to the image in the 'uploaded_files' folder
-    image_path = './uploaded_files/image.jpg'  # Update the image name if needed
-
-    # Ensure the file exists in the 'uploaded_files' folder
-    if os.path.exists(image_path):
-    # Load the image as RGB to match the model’s expected input shape
-        image = load_img(image_path, target_size=(48, 48), color_mode="rgb")
-        
-        # Convert image to array and add batch dimension
-        image = img_to_array(image)
-        image = np.expand_dims(image, axis=0)  # Add batch dimension
-        image /= 255.0  # Normalize the image
-
-        # Run the model prediction
-        predictions = model.predict(image)
-
-        # Decode the prediction (e.g., emotion labels in a classification model)
-        # Assuming a softmax output with labels
-        class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']  # Adjust to your classes
-        predicted_class = class_names[np.argmax(predictions)]
-        confidence = np.max(predictions)
-
-        print(f"Predicted emotion: {predicted_class} with confidence {confidence:.2f}")
-    else:
-        print(f"Image not found at {image_path}. Please check the file path.")
-
-
-@app.post("/model")
-def run():
-    # Path to the image in the 'uploaded_files' folder
-    image_path = './uploaded_files/image.jpg'  # Update the image name if needed
-
-    # Ensure the file exists in the 'uploaded_files' folder
-    if os.path.exists(image_path):
-    # Load the image as RGB to match the model’s expected input shape
-        image = load_img(image_path, target_size=(48, 48), color_mode="rgb")
-        
-        # Convert image to array and add batch dimension
-        image = img_to_array(image)
-        image = np.expand_dims(image, axis=0)  # Add batch dimension
-        image /= 255.0  # Normalize the image
-
-        # Run the model prediction
-        predictions = model.predict(image)
-
-        # Decode the prediction (e.g., emotion labels in a classification model)
-        # Assuming a softmax output with labels
-        class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']  # Adjust to your classes
-        predicted_class = class_names[np.argmax(predictions)]
-        confidence = np.max(predictions)
-
-        print(f"Predicted emotion: {predicted_class} with confidence {confidence:.2f}")
-    else:
-        print(f"Image not found at {image_path}. Please check the file path.")
-
-@app.get("/interviewees")
-def get_interviewees():
-    try:
-        # Establish connection to MySQL database
-        connection = mysql.connector.connect(
-            host="localhost",
-            user="root", 
-            password="",
-            database="expriview"
-        )
-
-        if connection.is_connected():
-            cursor = connection.cursor(dictionary=True)
-            
-            # Execute query to get all interviewees
-            cursor.execute("SELECT * FROM interviewees")
-            
-            # Fetch all records
-            interviewees = cursor.fetchall()
-            
-            # Close cursor and connection
-            cursor.close()
-            connection.close()
-            
-            return {"status": "success", "data": interviewees}
-
-    except Error as e:
-        return {"status": "error", "message": str(e)}
-
-    finally:
-        if 'connection' in locals() and connection.is_connected():
-            connection.close()
-
 @app.post("/analyze-emotion")
 async def analyze_emotion(file: UploadFile = File(...)):
     try:
@@ -253,18 +149,6 @@ async def analyze_emotion(file: UploadFile = File(...)):
             "status": "error",
             "message": str(e)
         }
-
-# Add these global variables near the top of the file
-session_emotions = {
-    'angry': 0,
-    'disgust': 0,
-    'fear': 0,
-    'happy': 0,
-    'sad': 0,
-    'surprise': 0,
-    'neutral': 0
-}
-session_active = False
 
 @app.post("/start-session/{interviewee_id}")
 async def start_session(interviewee_id: int):
@@ -335,3 +219,93 @@ async def end_session(interviewee_id: int):
     finally:
         if 'connection' in locals() and connection.is_connected():
             connection.close()
+            
+# This is used to get all the data from the interviewees table, to ouputted into the start interview page
+@app.get("/interviewees")
+def get_interviewees():
+    try:
+        # Establish connection to MySQL database
+        connection = mysql.connector.connect(
+            host="localhost",
+            user="root", 
+            password="",
+            database="expriview"
+        )
+
+        if connection.is_connected():
+            cursor = connection.cursor(dictionary=True)
+            
+            # Execute query to get all interviewees
+            cursor.execute("SELECT * FROM interviewees")
+            
+            # Fetch all records
+            interviewees = cursor.fetchall()
+            
+            # Close cursor and connection
+            cursor.close()
+            connection.close()
+            
+            return {"status": "success", "data": interviewees}
+
+    except Error as e:
+        return {"status": "error", "message": str(e)}
+
+    finally:
+        if 'connection' in locals() and connection.is_connected():
+            connection.close()
+
+# This is used to get all the results, which is the last expression of each interviewee, to be outputted into the results page
+@app.get("/results")
+def get_results():
+    try:
+        connection = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="expriview"
+        )
+
+        if connection.is_connected():
+            cursor = connection.cursor(dictionary=True)
+            
+            query = """
+            SELECT 
+                i.name, 
+                e.sad, 
+                e.disgust, 
+                e.surprise, 
+                e.surprise, 
+                e.angry, 
+                e.fear, 
+                e.happy, 
+                e.neutral,
+                e.created_at as date
+            FROM interviewees AS i 
+            JOIN expressions AS e 
+            ON i.id = e.interviewee_id 
+            WHERE e.id = ( SELECT MAX(id) FROM expressions AS e2 WHERE e2.interviewee_id = e.interviewee_id );
+            """
+            
+            cursor.execute(query)
+            results = cursor.fetchall()
+            
+            # Format the data
+            formatted_results = [{
+                'name': result['name'] or 'Unknown',
+                'date': result['date'].strftime('%Y-%m-%d %H:%M:%S'),
+                'happy': int(result['happy'] or 0),
+                'disgust': int(result['disgust'] or 0),
+                'angry': int(result['angry'] or 0),
+                'fear': int(result['fear'] or 0),
+                'neutral': int(result['neutral'] or 0),
+                'sad': int(result['sad'] or 0),
+                'surprise': int(result['surprise'] or 0)
+            } for result in results]
+            
+            cursor.close()
+            connection.close()
+            
+            return {"status": "success", "data": formatted_results}
+
+    except Error as e:
+        return {"status": "error", "message": str(e)}
