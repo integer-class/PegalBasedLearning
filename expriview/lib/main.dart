@@ -38,7 +38,7 @@ class _EntryPointState extends State<EntryPoint> {
   static final List<Widget> _pages = [
     const home.HomeScreen(),
     const interview.StartInterviewPage(),
-    const result.ResultsPage(),
+    result.ResultsPage(),
     const profile.ProfilePage(),
   ];
 
