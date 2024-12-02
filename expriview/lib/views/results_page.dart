@@ -86,7 +86,7 @@ class PreviousSessionItem extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => ResultDetail(
                         name: name,
-                        dataMap: {
+                        dataMap: const {
                           "Happy": 25.0, // Updated to match StackedBar
                           "Disgust": 26.0,
                           "Angry": 24.0,
@@ -95,7 +95,7 @@ class PreviousSessionItem extends StatelessWidget {
                           "Sad": 10.0,
                           "Surprise": 12.0,
                         }, // Updated dataMap
-                        colorList: [
+                        colorList: const [
                           Colors.yellow, // Updated to match StackedBar
                           Colors.green,
                           Colors.red,

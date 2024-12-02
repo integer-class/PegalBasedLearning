@@ -1,31 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'views/home_page.dart' as home;
-import 'views/results_page.dart';
-import 'views/result_detail.dart';
+import 'screens/home/home_screen.dart' as home;
 import 'views/start_interview_page.dart' as interview;
+import 'views/results_page.dart' as result;
 import 'views/profile_page.dart' as profile;
 
 void main() => runApp(const MyApp());
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Expriview',
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFEEF1F8),
+        primarySwatch: Colors.blue,
+        fontFamily: "Intel",
+      ),
+      home: const EntryPoint(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class EntryPoint extends StatefulWidget {
+  const EntryPoint({super.key});
+
+  @override
+  State<EntryPoint> createState() => _EntryPointState();
+}
+
+class _EntryPointState extends State<EntryPoint> {
   int _selectedIndex = 0;
 
+  // Define the _pages variable and populate it with the corresponding pages
   static final List<Widget> _pages = [
-    const home.HomePage(),
+    const home.HomeScreen(),
     const interview.StartInterviewPage(),
-    const ResultsPage(),
+    const result.ResultsPage(),
     const profile.ProfilePage(),
   ];
 
-  void changeTab(int index) {
+  void _changeTab(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -33,117 +50,86 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ExpriView',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return Scaffold(
+      body: Stack(
+        children: [
+          _pages[_selectedIndex], // Body content
+
+          // Side menu button in the top-left corner
+          Positioned(
+            top: 15, // Adjust the top position
+            left: 20, // Adjust the left position
+            child: GestureDetector(
+              onTap: () {
+                // Implement your side menu functionality here
+                print("Side menu tapped");
+              },
+              child: Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.menu, color: Colors.black),
+              ),
+            ),
+          ),
+        ],
       ),
-      home: Scaffold(
-        body: _pages[_selectedIndex],
-        bottomNavigationBar: Container(
-          height: 75,
-          width: double.infinity,
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
-            child: GNav(
-              backgroundColor: Colors.white,
-              color: const Color(0xFF5A7590),
-              activeColor: const Color(0xFF2E77AE),
-              tabBackgroundColor: const Color(0xFFF2F7FF),
-              gap: 10,
-              padding: const EdgeInsets.all(20),
-              onTabChange: changeTab,
-              tabs: const [
-                GButton(
-                  icon: Icons.home,
-                  text: 'Home',
-                ),
-                GButton(
-                  icon: Icons.videocam,
-                  text: 'Recording',
-                ),
-                GButton(
-                  icon: Icons.assessment,
-                  text: 'Results',
-                ),
-                GButton(
-                  icon: Icons.person,
-                  text: 'Profile',
+      bottomNavigationBar: Container(
+        margin: const EdgeInsets.only(
+          left: 10, // Left margin outside the navbar
+          right: 10, // Right margin outside the navbar
+          bottom: 10, // Bottom margin outside the navbar
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(25)),
+          child: Container(
+            height: 70,
+            decoration: BoxDecoration(
+              color:
+                  const Color.fromARGB(255, 255, 255, 255), // Navbar background
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3), // Shadow opacity
+                  spreadRadius: 5,
+                  blurRadius: 10,
+                  offset: const Offset(2, 2), // Slight shadow offset
                 ),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class PreviousSessionItem extends StatelessWidget {
-  final String name;
-  final String date;
-  final Map<String, double> dataMap; // Added dataMap as a parameter
-  final List<Color> colorList; // Added colorList as a parameter
-
-  const PreviousSessionItem({
-    Key? key,
-    required this.name,
-    required this.date,
-    required this.dataMap,
-    required this.colorList,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 10,
+                right: 10,
+                bottom: 10,
+                top: 10,
+              ),
+              child: GNav(
+                backgroundColor:
+                    Colors.transparent, // Keep navbar background transparent
+                color: const Color(0xFF5A7590),
+                activeColor: const Color(0xFF2E77AE),
+                tabBackgroundColor: const Color(0xFFF2F7FF),
+                gap: 10,
+                padding: const EdgeInsets.all(10),
+                onTabChange: _changeTab,
+                tabs: const [
+                  GButton(icon: Icons.home, text: 'Home'),
+                  GButton(icon: Icons.videocam, text: 'Recording'),
+                  GButton(icon: Icons.assessment, text: 'Results'),
+                  GButton(icon: Icons.person, text: 'Profile'),
+                ],
+              ),
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: const TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8.0),
-              Text(date),
-              const SizedBox(height: 8.0),
-              TextButton(
-                onPressed: () {
-                  // Navigate to ResultDetail when the button is pressed
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ResultDetail(
-                        name: name,
-                        dataMap: dataMap, // Pass the dataMap to ResultDetail
-                        colorList:
-                            colorList, // Pass the colorList to ResultDetail
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Detail'),
-              ),
-            ],
           ),
         ),
       ),

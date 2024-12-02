@@ -33,12 +33,12 @@ class ResultDetail extends StatelessWidget {
             chartType: ChartType.ring,
             ringStrokeWidth: 32,
             centerText: "Emotion",
-            legendOptions: LegendOptions(
+            legendOptions: const LegendOptions(
               showLegendsInRow: false,
               legendPosition: LegendPosition.right,
               showLegends: true,
               legendShape: BoxShape.circle,
-              legendTextStyle: const TextStyle(
+              legendTextStyle: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),
