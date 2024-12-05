@@ -6,6 +6,10 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile Settings'),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
@@ -19,12 +23,12 @@ class ProfilePage extends StatelessWidget {
                     radius: 40,
                     backgroundImage: AssetImage('assets/profile_image.jpg'),
                   ),
-                  SizedBox(width: 16.0), // Jarak antara avatar dan teks
+                  SizedBox(width: 16.0),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Jaehyun Myung',
+                        'HRD-KimJongUnch',
                         style: TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
@@ -32,7 +36,7 @@ class ProfilePage extends StatelessWidget {
                       ),
                       SizedBox(height: 4.0),
                       Text(
-                        'Human Resources at PT Figma',
+                        'PT RAWR CEMAZ',
                         style: TextStyle(
                           fontSize: 16.0,
                           color: Colors.grey,
@@ -44,55 +48,20 @@ class ProfilePage extends StatelessWidget {
               ),
               const SizedBox(height: 24.0),
               ListTile(
-                leading: const Icon(Icons.message),
-                title: const Text('Saved Messages'),
+                leading: const Icon(Icons.edit),
+                title: const Text('Change Username'),
                 onTap: () {
-                  // Handle saved messages
+                  // Navigate to username change screen or handle username change
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.call),
-                title: const Text('Recent Calls'),
+                leading: const Icon(Icons.lock),
+                title: const Text('Change Password'),
                 onTap: () {
-                  // Handle recent calls
+                  // Navigate to password change screen or handle password change
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.devices),
-                title: const Text('Devices'),
-                onTap: () {
-                  // Handle devices
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.notifications),
-                title: const Text('Notifications'),
-                onTap: () {
-                  // Handle notifications
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text('Appearance'),
-                onTap: () {
-                  // Handle appearance
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.language),
-                title: const Text('Language'),
-                onTap: () {
-                  // Handle language
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.security),
-                title: const Text('Privacy & Security'),
-                onTap: () {
-                  // Handle privacy and security
-                },
-              ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 24.0),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
