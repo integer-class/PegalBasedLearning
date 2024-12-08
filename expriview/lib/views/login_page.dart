@@ -48,7 +48,11 @@ class LoginPage extends StatelessWidget {
             const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                // Handle login logic
+                // Pindah ke menu utama setelah login
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MenuPage()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
@@ -61,25 +65,52 @@ class LoginPage extends StatelessWidget {
             const SizedBox(height: 10.0),
             TextButton(
               onPressed: () {
-                // Handle forgot password logic
+                // Navigasi ke halaman pendaftaran
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterPage()),
+                );
               },
-              child: const Text('Forgot Password?'),
-            ),
-            const SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Don't have an account?"),
-                TextButton(
-                  onPressed: () {
-                    // Handle sign up navigation
-                  },
-                  child: const Text('Sign Up'),
-                ),
-              ],
+              child: const Text('Don’t have an account? Register'),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MenuPage extends StatelessWidget {
+  const MenuPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Main Menu'),
+      ),
+      body: Center(
+        child: const Text(
+          'Welcome to the Main Menu!',
+          style: TextStyle(fontSize: 24.0),
+        ),
+      ),
+    );
+  }
+}
+
+class RegisterPage extends StatelessWidget {
+  const RegisterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Register'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: const Text('Register Page (under construction)'),
       ),
     );
   }
