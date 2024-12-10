@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -63,25 +63,51 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     ...courses.map((course) => Padding(
                           padding: const EdgeInsets.only(left: 15),
-                          child: CourseCard(course: course),
+                          child: CourseCard(
+                            course: course,
+                            isMale: true,
+                          ),
                         )),
                   ],
                 ),
               ),
+              const SizedBox(
+                height: 15,
+              ),
               Padding(
-                padding: const EdgeInsets.all(20),
-                child: Text(
-                  "Recent",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall!
-                      .copyWith(fontWeight: FontWeight.w600),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment
+                      .spaceBetween, // Space between "Recent" and "See All"
+                  children: [
+                    const Text(
+                      "Recent",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Add your action here when "See All" is pressed
+                      },
+                      child: const Text(
+                        "See All",
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+              const SizedBox(
+                height: 5,
               ),
               ...recentCourses.map(
                 (course) => Padding(
                   padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                      const EdgeInsets.only(left: 20, right: 20, bottom: 15),
                   child: SecondaryCourseCard(course: course),
                 ),
               ),
