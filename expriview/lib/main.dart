@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'screens/home/home_screen.dart' as home;
+import 'views/home/home_screen.dart' as home;
 import 'views/start_interview_page.dart' as interview;
 import 'views/results_page.dart' as result;
 import 'views/profile_page.dart' as profile;
@@ -53,35 +53,7 @@ class _EntryPointState extends State<EntryPoint> {
     return Scaffold(
       body: Stack(
         children: [
-          _pages[_selectedIndex], // Body content
-
-          // Side menu button in the top-left corner
-          Positioned(
-            top: 15, // Adjust the top position
-            left: 20, // Adjust the left position
-            child: GestureDetector(
-              onTap: () {
-                // Implement your side menu functionality here
-                print("Side menu tapped");
-              },
-              child: Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: const Icon(Icons.menu, color: Colors.black),
-              ),
-            ),
-          ),
+          _pages[_selectedIndex],
         ],
       ),
       bottomNavigationBar: Container(
@@ -100,9 +72,8 @@ class _EntryPointState extends State<EntryPoint> {
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.3), // Shadow opacity
-                  spreadRadius: 5,
-                  blurRadius: 10,
-                  offset: const Offset(2, 2), // Slight shadow offset
+                  blurRadius: 0,
+                  offset: const Offset(4, 4), // Slight shadow offset
                 ),
               ],
             ),

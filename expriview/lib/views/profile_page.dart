@@ -11,7 +11,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String username = "HRD-RAWR";
-  String password = "password123"; // Password aktual yang digunakan untuk validasi
+  String password =
+      "password123"; // Password aktual yang digunakan untuk validasi
 
   void _changeEmail() async {
     final result = await showDialog<Map<String, String>>(
@@ -158,9 +159,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Profile'),
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
@@ -213,7 +214,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: ElevatedButton(
                   onPressed: _logOut,
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 20),
                   ),
                   child: const Text('Log Out'),
                 ),
