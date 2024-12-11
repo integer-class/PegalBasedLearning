@@ -41,6 +41,7 @@ dependencies:
   google_nav_bar: ^5.0.7
   rive : ^0.13.18 
   flutter_svg: ^2.0.16
+  shared_preferences: ^2.0.17
 
   curved_navigation_bar: ^1.0.6 
   responsive_navigation_bar: ^5.0.2

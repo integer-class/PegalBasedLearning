@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Interviewee {
   final int id;
@@ -8,7 +9,6 @@ class Interviewee {
   final String gender;
   final String email;
   final String? cv;
-  final String status;
   final String createdAt;
   final String updatedAt;
 
@@ -18,7 +18,6 @@ class Interviewee {
     required this.gender,
     required this.email,
     this.cv,
-    required this.status,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -30,7 +29,6 @@ class Interviewee {
       gender: json['gender'],
       email: json['email'],
       cv: json['cv'],
-      status: json['status'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
     );
@@ -42,25 +40,44 @@ class ApiService {
 
   Future<List<Interviewee>> getInterviewees() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/interviewees'));
-      
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('token');
+
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await http.get(
+        Uri.parse('$baseUrl/interviewees'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final List<dynamic> intervieweesJson = data['data'];
         return intervieweesJson.map((json) => Interviewee.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load interviewees');
+        throw Exception('Failed to load interviewees: ${response.statusCode}');
       }
     } catch (e) {
-      print('Connection Error: $e');
+      print('Error fetching interviewees: $e');
       throw e;
     }
   }
 
+
   Future<EmotionResponse> analyzeEmotion(dynamic imageData) async {
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('token');
+      
       var uri = Uri.parse('$baseUrl/analyze-emotion');
       var request = http.MultipartRequest('POST', uri);
+
+      request.headers['Authorization'] = 'Bearer $token';
 
       if (imageData is Uint8List) {
         // Handle web case (bytes)
@@ -99,10 +116,17 @@ class ApiService {
     }
   }
 
-  Future<void> startSession(int intervieweeId) async {
+
+  Future<void> startSession() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/start-session/$intervieweeId'),
+        
+        Uri.parse('$baseUrl/start-session'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
       );
 
       if (response.statusCode != 200) {
@@ -116,9 +140,14 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> endSession(int intervieweeId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/end-session/$intervieweeId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
       );
 
       if (response.statusCode == 200) {
@@ -137,15 +166,29 @@ class ApiService {
     }
   }
 
+
   Future<List<Map<String, dynamic>>> fetchResults() async {
     try {
-      final connection = await http.get(Uri.parse('$baseUrl/results'));
-      
-      if (connection.statusCode == 200) {
-        final data = json.decode(connection.body);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('token');
+
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await http.get(
+        Uri.parse('$baseUrl/results'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
         return List<Map<String, dynamic>>.from(data['data']);
       } else {
-        throw Exception('Failed to load results');
+        throw Exception('Failed to load results: ${response.statusCode}');
       }
     } catch (e) {
       print('Error fetching results: $e');

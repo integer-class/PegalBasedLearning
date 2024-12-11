@@ -104,7 +104,7 @@ class _RecordingPageState extends State<RecordingPage> {
     try {
       if (!_isRecording) {
         // Start session
-        await _apiService.startSession(widget.intervieweeId);
+        await _apiService.startSession();
         setState(() => _isRecording = true);
       } else {
         // End session and get results

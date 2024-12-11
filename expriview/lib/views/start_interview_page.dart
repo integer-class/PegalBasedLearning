@@ -99,7 +99,6 @@ class _StartInterviewPageState extends State<StartInterviewPage> {
                 name: interviewee.name,
                 gender: interviewee.gender,
                 email: interviewee.email,
-                status: interviewee.status,
               )).toList(),
         ),
       ),
@@ -112,7 +111,6 @@ class SessionCard extends StatelessWidget {
   final String name;
   final String gender;
   final String email;
-  final String status;
 
   const SessionCard({
     super.key,
@@ -120,7 +118,6 @@ class SessionCard extends StatelessWidget {
     required this.name,
     required this.gender,
     required this.email,
-    required this.status,
   });
 
   @override
@@ -158,21 +155,6 @@ class SessionCard extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: status == 'accepted' ? Colors.green[100] : Colors.orange[100],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    status.toUpperCase(),
-                    style: TextStyle(
-                      color: status == 'accepted' ? Colors.green[800] : Colors.orange[800],
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
                   ),
                 ),
               ],

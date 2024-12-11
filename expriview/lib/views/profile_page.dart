@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 import 'login_page.dart'; 
 
 class ProfilePage extends StatefulWidget {
@@ -12,61 +13,66 @@ class _ProfilePageState extends State<ProfilePage> {
   String username = "HRD-RAWR";
   String password = "password123"; // Password aktual yang digunakan untuk validasi
 
-  void _changeUsername() async {
+  void _changeEmail() async {
     final result = await showDialog<Map<String, String>>(
       context: context,
       builder: (BuildContext context) {
-        String newUsername = username;
+        String newEmail = "";
         String currentPassword = "";
 
-        return AlertDialog(
-          title: const Text('Change Username'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                onChanged: (value) => newUsername = value,
-                decoration: const InputDecoration(labelText: 'New Username'),
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: const Text('Change Email'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      newEmail = value;
+                    });
+                  },
+                  decoration: const InputDecoration(labelText: 'New Email'),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      currentPassword = value;
+                    });
+                  },
+                  decoration: const InputDecoration(labelText: 'Current Password'),
+                  obscureText: true,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context), // Cancel
+                child: const Text('Cancel'),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                onChanged: (value) => currentPassword = value,
-                decoration: const InputDecoration(labelText: 'Current Password'),
-                obscureText: true,
+              TextButton(
+                onPressed: () async {
+                  try {
+                    final authService = AuthService();
+                    await authService.changeEmail(newEmail, currentPassword);
+                    Navigator.pop(context, {'success': true});
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Email updated successfully')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to update email: $e')),
+                    );
+                  }
+                },
+                child: const Text('Save'),
               ),
             ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context), // Cancel
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, {
-                'newUsername': newUsername,
-                'currentPassword': currentPassword,
-              }), // Save
-              child: const Text('Save'),
-            ),
-          ],
-        );
+          );
+        });
       },
     );
-
-    if (result != null) {
-      if (result['currentPassword'] == password) {
-        setState(() {
-          username = result['newUsername']!;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Username updated successfully')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Incorrect password')),
-        );
-      }
-    }
   }
 
   void _changePassword() async {
@@ -76,63 +82,77 @@ class _ProfilePageState extends State<ProfilePage> {
         String newPassword = "";
         String currentPassword = "";
 
-        return AlertDialog(
-          title: const Text('Change Password'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                onChanged: (value) => newPassword = value,
-                decoration: const InputDecoration(labelText: 'New Password'),
-                obscureText: true,
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            title: const Text('Change Password'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      newPassword = value;
+                    });
+                  },
+                  decoration: const InputDecoration(labelText: 'New Password'),
+                  obscureText: true,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      currentPassword = value;
+                    });
+                  },
+                  decoration: const InputDecoration(labelText: 'Current Password'),
+                  obscureText: true,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context), // Cancel
+                child: const Text('Cancel'),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                onChanged: (value) => currentPassword = value,
-                decoration: const InputDecoration(labelText: 'Current Password'),
-                obscureText: true,
+              TextButton(
+                onPressed: () async {
+                  try {
+                    final authService = AuthService();
+                    await authService.changePassword(currentPassword, newPassword);
+                    Navigator.pop(context, {'success': true});
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Password updated successfully')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to update password: $e')),
+                    );
+                  }
+                },
+                child: const Text('Save'),
               ),
             ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context), // Cancel
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, {
-                'newPassword': newPassword,
-                'currentPassword': currentPassword,
-              }), // Save
-              child: const Text('Save'),
-            ),
-          ],
-        );
+          );
+        });
       },
     );
-
-    if (result != null) {
-      if (result['currentPassword'] == password) {
-        setState(() {
-          password = result['newPassword']!;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Password updated successfully')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Incorrect password')),
-        );
-      }
-    }
   }
 
-  void _logOut() {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-      (route) => false,
-    );
+  void _logOut() async {
+    final AuthService authService = AuthService();
+
+    try {
+      await authService.logout(); // Call the logout API
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()), // Redirect to login
+        (route) => false,
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Logout failed: $e')),
+      );
+    }
   }
 
   @override
@@ -179,9 +199,9 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 24.0),
               ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text('Change Username'),
-                onTap: _changeUsername,
+                leading: const Icon(Icons.email),
+                title: const Text('Change Email'),
+                onTap: _changeEmail,
               ),
               ListTile(
                 leading: const Icon(Icons.lock),
@@ -201,22 +221,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
-      body: Center(
-        child: const Text('Login Page'),
       ),
     );
   }
