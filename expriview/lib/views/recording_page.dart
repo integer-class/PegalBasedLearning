@@ -39,12 +39,13 @@ class _RecordingPageState extends State<RecordingPage> {
 
     _controller = CameraController(
       firstCamera,
-      ResolutionPreset.medium,
+      ResolutionPreset.high,
       enableAudio: false,
     );
 
     try {
       await _controller!.initialize();
+      await _controller!.setFlashMode(FlashMode.off);
       if (mounted) {
         setState(() {});
         _startCapturing();
@@ -165,10 +166,12 @@ class _RecordingPageState extends State<RecordingPage> {
         children: [
           // Camera preview (full screen)
           if (_controller?.value.isInitialized ?? false)
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              child: CameraPreview(_controller!),
+            Align(
+              alignment: Alignment.topCenter,
+              child: AspectRatio(
+                aspectRatio: 9/16,
+                child: CameraPreview(_controller!),
+              ),
             ),
           
           // Header with interviewee name (overlay)
@@ -215,7 +218,7 @@ class _RecordingPageState extends State<RecordingPage> {
           
           // Bottom controls (overlay)
           Positioned(
-            bottom: 30,
+            bottom: 25,
             left: 0,
             right: 0,
             child: Column(
