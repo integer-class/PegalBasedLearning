@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+import 'views/login_page.dart';
+import 'views/register_page.dart';
 import 'views/home/home_screen.dart' as home;
 import 'views/start_interview_page.dart' as interview;
 import 'views/results_page.dart' as result;
 import 'views/profile_page.dart' as profile;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 void main() => runApp(const MyApp());
 
@@ -19,7 +22,39 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: "Intel",
       ),
-      home: const EntryPoint(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const AuthCheck(),
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const EntryPoint(),
+        '/register': (context) => const RegisterPage(),
+      },
+    );
+  }
+}
+
+class AuthCheck extends StatelessWidget {
+  const AuthCheck({super.key});
+
+  Future<bool> isLoggedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey('token');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: isLoggedIn(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasData && snapshot.data == true) {
+          return const EntryPoint();
+        } else {
+          return const LoginPage();
+        }
+      },
     );
   }
 }
@@ -34,7 +69,6 @@ class EntryPoint extends StatefulWidget {
 class _EntryPointState extends State<EntryPoint> {
   int _selectedIndex = 0;
 
-  // Define the _pages variable and populate it with the corresponding pages
   static final List<Widget> _pages = [
     const home.HomeScreen(),
     const interview.StartInterviewPage(),
@@ -57,36 +91,25 @@ class _EntryPointState extends State<EntryPoint> {
         ],
       ),
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.only(
-          left: 10, // Left margin outside the navbar
-          right: 10, // Right margin outside the navbar
-          bottom: 10, // Bottom margin outside the navbar
-        ),
+        margin: const EdgeInsets.all(10),
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(25)),
           child: Container(
             height: 70,
             decoration: BoxDecoration(
-              color:
-                  const Color.fromARGB(255, 255, 255, 255), // Navbar background
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3), // Shadow opacity
+                  color: Colors.black.withOpacity(0.3),
                   blurRadius: 0,
-                  offset: const Offset(4, 4), // Slight shadow offset
+                  offset: const Offset(4, 4),
                 ),
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.only(
-                left: 10,
-                right: 10,
-                bottom: 10,
-                top: 10,
-              ),
+              padding: const EdgeInsets.all(10),
               child: GNav(
-                backgroundColor:
-                    Colors.transparent, // Keep navbar background transparent
+                backgroundColor: Colors.transparent,
                 color: const Color(0xFF5A7590),
                 activeColor: const Color(0xFF2E77AE),
                 tabBackgroundColor: const Color(0xFFF2F7FF),

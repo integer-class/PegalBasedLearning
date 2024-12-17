@@ -41,50 +41,49 @@ class SecondaryCourseCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(
-            height: 30,
-            child: VerticalDivider(
-              color: Colors.grey,
-            ),
-          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
                 children: [
                   Container(
-                    width: 20,
+                    width: course.happy.toDouble(),
                     height: 8,
-                    color: Colors.blue, // Bar 1
+                    color: Colors.yellow, // Bar 1
                   ),
                   Container(
-                    width: 15,
+                    width: course.disgust.toDouble(),
                     height: 8,
                     color: Colors.green, // Bar 2
                   ),
                   Container(
-                    width: 10,
+                    width: course.angry.toDouble(),
                     height: 8,
                     color: Colors.red, // Bar 3
                   ),
+                  Container(
+                    width: course.fear.toDouble(),
+                    height: 8,
+                    color: Colors.black, // Bar 1
+                  ),
+                  Container(
+                    width: course.neutral.toDouble(),
+                    height: 8,
+                    color: Colors.grey, // Bar 2
+                  ),
+                  Container(
+                    width: course.sad.toDouble(),
+                    height: 8,
+                    color: Colors.blue, // Bar 3
+                  ),
+                  Container(
+                    width: course.surprise.toDouble(),
+                    height: 8,
+                    color: Colors.orange, // Bar 3
+                  ),
                 ],
               ),
-              const SizedBox(height: 4), // Space between the bars and the text
-              const Text(
-                'Happy: 40%',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
             ],
-          ),
-          const SizedBox(
-            height: 30,
-            child: VerticalDivider(
-              color: Colors.grey,
-            ),
           ),
           const SizedBox(width: 8),
           TextButton(

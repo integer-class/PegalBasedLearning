@@ -6,11 +6,9 @@ class CourseCard extends StatelessWidget {
   const CourseCard({
     super.key,
     required this.course,
-    required this.isMale, // Tambahkan properti untuk gender
   });
 
   final Course course;
-  final bool isMale; // true untuk male, false untuk female
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +55,8 @@ class CourseCard extends StatelessWidget {
                     Row(
                       children: [
                         Icon(
-                          isMale ? Icons.male : Icons.female, // Gender icon
-                          color: isMale
+                          course.isMale ? Icons.male : Icons.female, // Gender icon
+                          color: course.isMale
                               ? Colors.blue
                               : Colors.pink, // Warna sesuai gender
                           size: 20,
@@ -77,13 +75,9 @@ class CourseCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const Text(
-                      "Tanggal Interview: 14 June 2020",
-                      style: TextStyle(color: Colors.grey, fontSize: 11),
-                    ),
-                    const Text(
-                      "Pukul: 13.00",
-                      style: TextStyle(color: Colors.grey, fontSize: 11),
+                    Text(
+                      course.email,
+                      style: const TextStyle(color: Colors.grey, fontSize: 11),
                     ),
                     const SizedBox(
                       height: 10,

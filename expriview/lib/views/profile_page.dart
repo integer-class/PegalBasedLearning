@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
 import 'login_page.dart'; 
+import '../services/auth_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -10,9 +10,21 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String username = "HRD-RAWR";
-  String password =
-      "password123"; // Password aktual yang digunakan untuk validasi
+  String username = "Loading...";
+  final AuthService _authService = AuthService();
+
+  @override
+  void initState() {
+    super.initState();
+    loadUsername();
+  }
+
+  Future<void> loadUsername() async {
+    final fetchedUsername = await _authService.fetchUsername(); // Call fetchUsername
+    setState(() {
+      username = fetchedUsername; // Update username with fetched value
+    });
+  }
 
   void _changeEmail() async {
     final result = await showDialog<Map<String, String>>(
@@ -184,14 +196,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: const TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 4.0),
-                      const Text(
-                        'POLINEMA',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.grey,
                         ),
                       ),
                     ],

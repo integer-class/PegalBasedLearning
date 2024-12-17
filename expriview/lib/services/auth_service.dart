@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  final String baseUrl = "http://127.0.0.1:8000";
+  final String baseUrl = "https://fissureee.site";
 
   Future<bool> login(String username, String password) async {
     final url = Uri.parse('$baseUrl/auth/token');
@@ -37,7 +38,8 @@ class AuthService {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'username': username, 'email': email, 'password': password}),
+        body: jsonEncode(
+            {'username': username, 'email': email, 'password': password}),
       );
 
       // Check the API response status
@@ -54,7 +56,6 @@ class AuthService {
       rethrow; // Pass the error up for handling in the UI
     }
   }
-
 
   Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -89,11 +90,48 @@ class AuthService {
     return prefs.containsKey('token');
   }
 
+  Future<Map<String, dynamic>?> userData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      return null; // User is not logged in
+    }
+
+    final url = Uri.parse('$baseUrl/users/me');
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body); // Return parsed user data
+    } else {
+      return null;
+    }
+  }
+
+  Future<String> fetchUsername() async {
+    try {
+      final userDataResponse = await userData(); // Fetch user data from API
+
+      if (userDataResponse != null && userDataResponse['username'] != null) {
+        return userDataResponse['username']; // Set the username
+      } else {
+        return 'unknown user';
+      }
+    } catch (e) {
+      return 'failed to fetch data';
+    }
+  }
+
   Future<void> changeEmail(String newEmail, String currentPassword) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token'); 
+    final token = prefs.getString('token');
     final url = Uri.parse('$baseUrl/auth/edit-email');
-    
+
     final response = await http.put(
       url,
       body: json.encode({
@@ -111,7 +149,8 @@ class AuthService {
     }
   }
 
-  Future<void> changePassword(String currentPassword, String newPassword) async {
+  Future<void> changePassword(
+      String currentPassword, String newPassword) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
@@ -122,7 +161,8 @@ class AuthService {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-        body: json.encode({'current_password': currentPassword, 'new_password': newPassword}),
+        body: json.encode(
+            {'current_password': currentPassword, 'new_password': newPassword}),
       );
 
       if (response.statusCode != 200) {

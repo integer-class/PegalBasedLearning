@@ -47,7 +47,7 @@ class HomeScreen extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsets.only(),
                       child: Text(
-                        'Welcome back! Ready to ace your next interview?',
+                        'Welcome back! Ready to start interviewing?',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
@@ -65,7 +65,6 @@ class HomeScreen extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 15),
                           child: CourseCard(
                             course: course,
-                            isMale: true,
                           ),
                         )),
                   ],
