@@ -71,7 +71,7 @@ class _StartInterviewPageState extends State<StartInterviewPage> {
           IconButton(
             icon: const Icon(Icons.search),
             color: const Color.fromARGB(
-                255, 0, 0, 0), // Set the color of the search icon to blue
+                255, 0, 0, 0), 
             onPressed: () {
               showSearch(
                 context: context,

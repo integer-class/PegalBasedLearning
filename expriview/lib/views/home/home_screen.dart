@@ -1,9 +1,11 @@
 import 'package:expriview/services/api_service.dart';
+import 'package:expriview/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Import untuk SVG
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../models/interviewee.dart';
 import '../../models/result.dart';
+import '../results_page.dart';
 import 'components/interviewee_card.dart';
 import 'components/result_card.dart';
 
@@ -16,6 +18,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService _apiService = ApiService();
+  final AuthService _authService = AuthService();
+  String username = "Loading...";
   List<Interviewee> interviewees = [];
   List<Result> results = [];
   bool isLoading = true;
@@ -26,6 +30,15 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _loadInterviewees();
     _loadResults();
+    loadUsername();
+  }
+
+  Future<void> loadUsername() async {
+    final fetchedUsername =
+        await _authService.fetchUsername(); 
+    setState(() {
+      username = fetchedUsername; 
+    });
   }
 
   Future<void> _loadInterviewees() async {
@@ -86,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       children: [
                         Text(
-                          "Hi, James",
+                          "Hi, $username",
                           style: Theme.of(context)
                               .textTheme
                               .headlineMedium!
@@ -95,15 +108,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontWeight: FontWeight.w600,
                               ),
                         ),
-                        const SizedBox(width: 8), // Jarak antara teks dan SVG
+                        const SizedBox(width: 8), 
                         SvgPicture.asset(
                           'assets/icons/hi.svg',
-                          width: 28, // Ukuran SVG
+                          width: 28, 
                           height: 28,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8), // Jarak antara teks
+                    const SizedBox(height: 8), 
                     const Padding(
                       padding: EdgeInsets.only(),
                       child: Text(
@@ -136,8 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment
-                      .spaceBetween, // Space between "Recent" and "See All"
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       "Recent",
@@ -146,7 +158,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        // Add your action here when "See All" is pressed
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ResultsPage()),
+                        );
                       },
                       child: const Text(
                         "See All",
@@ -164,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 5,
               ),
               SizedBox(
-                height: 460,
+                height: 535,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
                   child: Column(

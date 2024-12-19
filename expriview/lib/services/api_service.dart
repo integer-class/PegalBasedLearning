@@ -1,15 +1,14 @@
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+import '../constants.dart';
 import 'dart:convert';
 import '../models/interviewee.dart';
 import '../models/emotion_response.dart';
 import '../models/result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class ApiService {
-  static const String baseUrl = 'https://fissureee.site';
+  // static const String baseUrl = 'https://fissureee.site';
 
   Future<List<Interviewee>> getInterviewees() async {
     try {
@@ -31,7 +30,9 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final List<dynamic> intervieweesJson = data['data'];
-        return intervieweesJson.map((json) => Interviewee.fromJson(json)).toList();
+        return intervieweesJson
+            .map((json) => Interviewee.fromJson(json))
+            .toList();
       } else {
         throw Exception('Failed to load interviewees: ${response.statusCode}');
       }
@@ -71,12 +72,11 @@ class ApiService {
     }
   }
 
-
   Future<EmotionResponse> analyzeEmotion(dynamic imageData) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('token');
-      
+
       var uri = Uri.parse('$baseUrl/analyze-emotion');
       var request = http.MultipartRequest('POST', uri);
 
@@ -106,7 +106,7 @@ class ApiService {
 
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return EmotionResponse.fromJson(data);
@@ -119,13 +119,11 @@ class ApiService {
     }
   }
 
-
   Future<void> startSession() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
     try {
       final response = await http.post(
-        
         Uri.parse('$baseUrl/start-session'),
         headers: {
           'Authorization': 'Bearer $token',
@@ -169,7 +167,6 @@ class ApiService {
     }
   }
 
-
   Future<List<Map<String, dynamic>>> fetchResults() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -199,4 +196,3 @@ class ApiService {
     }
   }
 }
-

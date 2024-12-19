@@ -1,65 +1,6 @@
-// import 'package:flutter/material.dart';
-// import '../../../models/interviewee.dart';
-
-// class SecondaryIntervieweeCard extends StatelessWidget {
-//   const SecondaryIntervieweeCard({
-//     super.key,
-//     required this.interviewee,
-//   });
-
-//   final Interviewee interviewee;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: const EdgeInsets.all(16),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(12),
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.black.withOpacity(0.1),
-//             blurRadius: 10,
-//             offset: const Offset(0, 6),
-//           ),
-//         ],
-//       ),
-//       child: Row(
-//         children: [
-//           Icon(
-//             interviewee.gender == 'male' ? Icons.male : Icons.female,
-//             color: interviewee.gender == 'male' ? Colors.blue : Colors.pink,
-//             size: 24,
-//           ),
-//           const SizedBox(width: 16),
-//           Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 interviewee.name,
-//                 style: const TextStyle(
-//                   fontSize: 16,
-//                   fontWeight: FontWeight.w600,
-//                 ),
-//               ),
-//               Text(
-//                 interviewee.email,
-//                 style: const TextStyle(
-//                   fontSize: 12,
-//                   color: Colors.grey,
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
-
 import '../../../models/result.dart';
+import '../../result_detail.dart'; 
 
 class ResultCard extends StatelessWidget {
   const ResultCard({
@@ -71,6 +12,27 @@ class ResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    final Map<String, double> dataMap = {
+      'Happy': result.happy.toDouble(),
+      'Disgust': result.disgust.toDouble(),
+      'Angry': result.angry.toDouble(),
+      'Fear': result.fear.toDouble(),
+      'Neutral': result.neutral.toDouble(),
+      'Sad': result.sad.toDouble(),
+      'Surprise': result.surprise.toDouble(),
+    };
+
+    final List<Color> colorList = [
+      Colors.yellow, 
+      Colors.green, 
+      Colors.red, 
+      Colors.black, 
+      Colors.grey, 
+      Colors.blue, 
+      Colors.orange, 
+    ];
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       decoration: const BoxDecoration(
@@ -152,7 +114,16 @@ class ResultCard extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              // Button pressed logic
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ResultDetail(
+                    name: result.name,
+                    dataMap: dataMap,
+                    colorList: colorList,
+                  ),
+                ),
+              );
             },
             child: const Text(
               'Detail',

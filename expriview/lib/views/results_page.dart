@@ -36,7 +36,6 @@ class _ResultsPageState extends State<ResultsPage> {
         case 'date':
           return (a['date'] ?? '').compareTo(b['date'] ?? '');
         default:
-          // Dynamically handle emotion sorting
           return (b[criteria] ?? 0).compareTo(a[criteria] ?? 0);
       }
     });
@@ -49,7 +48,6 @@ class _ResultsPageState extends State<ResultsPage> {
       appBar: AppBar(
         title: const Text('Results'),
         actions: [
-          // Dropdown to choose sorting criteria
           DropdownButton<String>(
             value: sortBy,
             items: const [
