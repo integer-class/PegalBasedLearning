@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import '../../../models/interviewee.dart';
 
-import '../../../models/course.dart';
-
-class CourseCard extends StatelessWidget {
-  const CourseCard({
+class IntervieweeCard extends StatelessWidget {
+  const IntervieweeCard({
     super.key,
-    required this.course,
+    required this.interviewee,
   });
 
-  final Course course;
+  final Interviewee interviewee;
 
   @override
   Widget build(BuildContext context) {
+    // Button style for "Start Interview" button
     final ButtonStyle flatButtonStyle = TextButton.styleFrom(
       foregroundColor: Colors.white, // Text color
       backgroundColor: const Color(0xFF2E77AE), // Background color
@@ -31,52 +31,47 @@ class CourseCard extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(12)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1), // Warna bayangan
+            color: Colors.black.withOpacity(0.1), // Shadow color
             blurRadius: 10, // Blur radius
-            offset: const Offset(0, 6), // Posisi bayangan (x, y)
+            offset: const Offset(0, 6), // Shadow offset (x, y)
           ),
         ],
       ),
       child: Row(
-        mainAxisAlignment:
-            MainAxisAlignment.center, // Align children to the center
-        crossAxisAlignment:
-            CrossAxisAlignment.center, // Align vertically to the center
+        mainAxisAlignment: MainAxisAlignment.center, // Center children horizontally
+        crossAxisAlignment: CrossAxisAlignment.center, // Center children vertically
         children: [
           Expanded(
             child: Row(
               children: [
-                const SizedBox(width: 5), // Spasi antara ikon dan teks
+                const SizedBox(width: 5), // Spacing between icon and text
                 Column(
-                  mainAxisAlignment:
-                      MainAxisAlignment.center, // Center items in Column
+                  mainAxisAlignment: MainAxisAlignment.center, // Center items vertically
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
                         Icon(
-                          course.isMale ? Icons.male : Icons.female, // Gender icon
-                          color: course.isMale
+                          interviewee.gender == 'male' ? Icons.male : Icons.female, // Gender icon
+                          color: interviewee.gender == 'male'
                               ? Colors.blue
-                              : Colors.pink, // Warna sesuai gender
+                              : Colors.pink, // Color based on gender
                           size: 20,
                         ),
                         const SizedBox(
                           width: 10,
                         ),
                         Text(
-                          course.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(
-                                  color: const Color.fromARGB(255, 29, 3, 74),
-                                  fontWeight: FontWeight.w600),
+                          interviewee.name, // Display interviewee's name
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                color: const Color.fromARGB(255, 29, 3, 74),
+                                fontWeight: FontWeight.w600,
+                              ),
                         ),
                       ],
                     ),
                     Text(
-                      course.email,
+                      interviewee.email, // Display interviewee's email
                       style: const TextStyle(color: Colors.grey, fontSize: 11),
                     ),
                     const SizedBox(
@@ -85,7 +80,7 @@ class CourseCard extends StatelessWidget {
                     TextButton(
                       style: flatButtonStyle,
                       onPressed: () {
-                        // Button pressed logic
+                        // Blank for now, you can add logic later
                       },
                       child: const Text(
                         'Start Interview',

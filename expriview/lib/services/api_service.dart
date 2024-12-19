@@ -1,39 +1,12 @@
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../models/interviewee.dart';
+import '../models/emotion_response.dart';
+import '../models/result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Interviewee {
-  final int id;
-  final String name;
-  final String gender;
-  final String email;
-  final String? cv;
-  final String createdAt;
-  final String updatedAt;
 
-  Interviewee({
-    required this.id,
-    required this.name,
-    required this.gender,
-    required this.email,
-    this.cv,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory Interviewee.fromJson(Map<String, dynamic> json) {
-    return Interviewee(
-      id: json['id'],
-      name: json['name'],
-      gender: json['gender'],
-      email: json['email'],
-      cv: json['cv'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
-    );
-  }
-}
 
 class ApiService {
   static const String baseUrl = 'https://fissureee.site';
@@ -64,6 +37,36 @@ class ApiService {
       }
     } catch (e) {
       print('Error fetching interviewees: $e');
+      throw e;
+    }
+  }
+
+  Future<List<Result>> getResults() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('token');
+
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await http.get(
+        Uri.parse('$baseUrl/results'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final List<dynamic> resultsJson = data['data'];
+        return resultsJson.map((json) => Result.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load results: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching results: $e');
       throw e;
     }
   }
@@ -197,24 +200,3 @@ class ApiService {
   }
 }
 
-class EmotionResponse {
-  final String emotion;
-  final double confidence;
-  final Map<String, int>? sessionCounts;
-
-  EmotionResponse({
-    required this.emotion,
-    required this.confidence,
-    this.sessionCounts,
-  });
-
-  factory EmotionResponse.fromJson(Map<String, dynamic> json) {
-    return EmotionResponse(
-      emotion: json['emotion'] as String,
-      confidence: (json['confidence'] as num).toDouble(),
-      sessionCounts: json['current_session_counts'] != null 
-          ? Map<String, int>.from(json['current_session_counts'])
-          : null,
-    );
-  }
-}

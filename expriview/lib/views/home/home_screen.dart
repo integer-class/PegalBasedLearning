@@ -1,12 +1,72 @@
+import 'package:expriview/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Import untuk SVG
 
-import '../../models/course.dart';
-import 'components/course_card.dart';
-import 'components/secondary_course_card.dart';
+import '../../models/interviewee.dart';
+import '../../models/result.dart';
+import 'components/interviewee_card.dart';
+import 'components/result_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ApiService _apiService = ApiService();
+  List<Interviewee> interviewees = [];
+  List<Result> results = [];
+  bool isLoading = true;
+  String? error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInterviewees();
+    _loadResults();
+  }
+
+  Future<void> _loadInterviewees() async {
+    try {
+      setState(() {
+        isLoading = true;
+        error = null;
+      });
+
+      final fetchedInterviewees = await _apiService.getInterviewees();
+      setState(() {
+        interviewees = fetchedInterviewees;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _loadResults() async {
+    try {
+      setState(() {
+        isLoading = true;
+        error = null;
+      });
+
+      final fetchedResults = await _apiService.getResults();
+      setState(() {
+        results = fetchedResults;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +121,10 @@ class HomeScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    ...courses.map((course) => Padding(
+                    ...interviewees.map((interviewee) => Padding(
                           padding: const EdgeInsets.only(left: 15),
-                          child: CourseCard(
-                            course: course,
+                          child: IntervieweeCard(
+                            interviewee: interviewee,
                           ),
                         )),
                   ],
@@ -103,11 +163,21 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 5,
               ),
-              ...recentCourses.map(
-                (course) => Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                  child: SecondaryCourseCard(course: course),
+              SizedBox(
+                height: 460,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      ...results.map(
+                        (result) => Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 15),
+                          child: ResultCard(result: result),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

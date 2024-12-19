@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'recording_page.dart';
 import '../services/api_service.dart';
+import '../models/interviewee.dart';
 
 class StartInterviewPage extends StatefulWidget {
   const StartInterviewPage({super.key});
