@@ -10,7 +10,7 @@ class RecordingPage extends StatefulWidget {
   final int intervieweeId;
 
   const RecordingPage({
-    super.key, 
+    super.key,
     required this.intervieweeName,
     required this.intervieweeId,
   });
@@ -67,16 +67,16 @@ class _RecordingPageState extends State<RecordingPage> {
   Future<void> _captureAndAnalyze() async {
     try {
       setState(() => _isProcessing = true);
-      
+
       final XFile image = await _controller!.takePicture();
-      
+
       try {
-        final response = await _apiService.analyzeEmotion(
-          kIsWeb ? await image.readAsBytes() : image.path
-        );
-        
+        final response = await _apiService
+            .analyzeEmotion(kIsWeb ? await image.readAsBytes() : image.path);
+
         setState(() {
-          _currentEmotion = '${response.emotion} (${(response.confidence * 100).toStringAsFixed(1)}%)';
+          _currentEmotion =
+              '${response.emotion} (${(response.confidence * 100).toStringAsFixed(1)}%)';
           _isProcessing = false;
         });
 
@@ -85,7 +85,7 @@ class _RecordingPageState extends State<RecordingPage> {
         }
       } catch (e) {
         setState(() {
-          _currentEmotion = e.toString().contains('No faces detected') 
+          _currentEmotion = e.toString().contains('No faces detected')
               ? 'No face detected'
               : 'Error analyzing emotion';
           _isProcessing = false;
@@ -108,9 +108,10 @@ class _RecordingPageState extends State<RecordingPage> {
         setState(() => _isRecording = true);
       } else {
         // End session and get results
-        final emotionCounts = await _apiService.endSession(widget.intervieweeId);
+        final emotionCounts =
+            await _apiService.endSession(widget.intervieweeId);
         setState(() => _isRecording = false);
-        
+
         if (mounted) {
           showDialog(
             context: context,
@@ -170,7 +171,7 @@ class _RecordingPageState extends State<RecordingPage> {
               height: double.infinity,
               child: CameraPreview(_controller!),
             ),
-          
+
           // Header with interviewee name (overlay)
           Positioned(
             top: 0,
@@ -212,7 +213,7 @@ class _RecordingPageState extends State<RecordingPage> {
               ),
             ),
           ),
-          
+
           // Bottom controls (overlay)
           Positioned(
             bottom: 30,
@@ -241,7 +242,7 @@ class _RecordingPageState extends State<RecordingPage> {
                       ),
                     ),
                   ),
-                
+
                 // Recording button
                 Center(
                   child: GestureDetector(
