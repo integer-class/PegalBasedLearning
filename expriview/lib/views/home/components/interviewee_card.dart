@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/course.dart';
+import '../../../models/interviewee.dart';
+import '../../recording_page.dart';
 
-class CourseCard extends StatelessWidget {
-  const CourseCard({
+class IntervieweeCard extends StatelessWidget {
+  const IntervieweeCard({
     super.key,
-    required this.course,
+    required this.interviewee,
   });
 
-  final Course course;
+  final Interviewee interviewee;
 
   @override
   Widget build(BuildContext context) {
@@ -31,52 +32,50 @@ class CourseCard extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(12)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1), // Warna bayangan
-            blurRadius: 10, // Blur radius
-            offset: const Offset(0, 6), // Posisi bayangan (x, y)
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Row(
-        mainAxisAlignment:
-            MainAxisAlignment.center, // Align children to the center
-        crossAxisAlignment:
-            CrossAxisAlignment.center, // Align vertically to the center
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Row(
               children: [
-                const SizedBox(width: 5), // Spasi antara ikon dan teks
+                const SizedBox(width: 5),
                 Column(
-                  mainAxisAlignment:
-                      MainAxisAlignment.center, // Center items in Column
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
                         Icon(
-                          course.isMale ? Icons.male : Icons.female, // Gender icon
-                          color: course.isMale
+                          interviewee.gender == 'male'
+                              ? Icons.male
+                              : Icons.female,
+                          color: interviewee.gender == 'male'
                               ? Colors.blue
-                              : Colors.pink, // Warna sesuai gender
+                              : Colors.pink,
                           size: 20,
                         ),
                         const SizedBox(
                           width: 10,
                         ),
                         Text(
-                          course.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(
-                                  color: const Color.fromARGB(255, 29, 3, 74),
-                                  fontWeight: FontWeight.w600),
+                          interviewee.name,
+                          style:
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    color: const Color.fromARGB(255, 29, 3, 74),
+                                    fontWeight: FontWeight.w600,
+                                  ),
                         ),
                       ],
                     ),
                     Text(
-                      course.email,
+                      interviewee.email,
                       style: const TextStyle(color: Colors.grey, fontSize: 11),
                     ),
                     const SizedBox(
@@ -85,7 +84,14 @@ class CourseCard extends StatelessWidget {
                     TextButton(
                       style: flatButtonStyle,
                       onPressed: () {
-                        // Button pressed logic
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => RecordingPage(
+                              intervieweeId: interviewee.id,
+                              intervieweeName: interviewee.name,
+                            ),
+                          ),
+                        );
                       },
                       child: const Text(
                         'Start Interview',

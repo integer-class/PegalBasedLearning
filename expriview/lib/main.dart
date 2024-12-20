@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'views/login_page.dart';
-import 'views/register_page.dart';
+// import 'views/register_page.dart';
 import 'views/home/home_screen.dart' as home;
 import 'views/start_interview_page.dart' as interview;
 import 'views/results_page.dart' as result;
@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Expriview',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFEEF1F8),
         primarySwatch: Colors.blue,
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const AuthCheck(),
         '/login': (context) => const LoginPage(),
         '/home': (context) => const EntryPoint(),
-        '/register': (context) => const RegisterPage(),
+        // '/register': (context) => const RegisterPage(),
       },
     );
   }

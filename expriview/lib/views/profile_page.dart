@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart'; 
+
 import '../services/auth_service.dart';
+import 'login_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -11,23 +12,32 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String username = "Loading...";
+  String email = "Loading...";
   final AuthService _authService = AuthService();
 
   @override
   void initState() {
     super.initState();
     loadUsername();
+    loadEmail();
   }
 
   Future<void> loadUsername() async {
-    final fetchedUsername = await _authService.fetchUsername(); // Call fetchUsername
+    final fetchedUsername = await _authService.fetchUsername();
     setState(() {
-      username = fetchedUsername; // Update username with fetched value
+      username = fetchedUsername;
+    });
+  }
+
+  Future<void> loadEmail() async {
+    final fetchedEmail = await _authService.fetchEmail();
+    setState(() {
+      email = fetchedEmail;
     });
   }
 
   void _changeEmail() async {
-    final result = await showDialog<Map<String, String>>(
+    await showDialog<Map<String, String>>(
       context: context,
       builder: (BuildContext context) {
         String newEmail = "";
@@ -54,28 +64,39 @@ class _ProfilePageState extends State<ProfilePage> {
                       currentPassword = value;
                     });
                   },
-                  decoration: const InputDecoration(labelText: 'Current Password'),
+                  decoration:
+                      const InputDecoration(labelText: 'Current Password'),
                   obscureText: true,
                 ),
               ],
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context), // Cancel
+                onPressed: () => Navigator.pop(context),
                 child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () async {
+                  final authService = AuthService();
+
                   try {
-                    final authService = AuthService();
                     await authService.changeEmail(newEmail, currentPassword);
-                    Navigator.pop(context, {'success': true});
+
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Email updated successfully')),
+                      const SnackBar(
+                        content: Text('Email updated successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
                     );
+
+                    Navigator.pop(context);
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to update email: $e')),
+                      SnackBar(
+                        content:
+                            Text('Failed to update email: ${e.toString()}'),
+                        backgroundColor: Colors.red,
+                      ),
                     );
                   }
                 },
@@ -89,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _changePassword() async {
-    final result = await showDialog<Map<String, String>>(
+    await showDialog<Map<String, String>>(
       context: context,
       builder: (BuildContext context) {
         String newPassword = "";
@@ -117,7 +138,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       currentPassword = value;
                     });
                   },
-                  decoration: const InputDecoration(labelText: 'Current Password'),
+                  decoration:
+                      const InputDecoration(labelText: 'Current Password'),
                   obscureText: true,
                 ),
               ],
@@ -129,16 +151,26 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               TextButton(
                 onPressed: () async {
+                  final authService = AuthService();
+
                   try {
-                    final authService = AuthService();
-                    await authService.changePassword(currentPassword, newPassword);
-                    Navigator.pop(context, {'success': true});
+                    await authService.changeEmail(currentPassword, newPassword);
+
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Password updated successfully')),
+                      const SnackBar(
+                        content: Text('Password updated successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
                     );
+
+                    Navigator.pop(context);
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to update password: $e')),
+                      SnackBar(
+                        content:
+                            Text('Failed to update Password: ${e.toString()}'),
+                        backgroundColor: Colors.red,
+                      ),
                     );
                   }
                 },
@@ -155,10 +187,11 @@ class _ProfilePageState extends State<ProfilePage> {
     final AuthService authService = AuthService();
 
     try {
-      await authService.logout(); // Call the logout API
+      await authService.logout(); 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const LoginPage()), // Redirect to login
+        MaterialPageRoute(
+            builder: (context) => const LoginPage()),
         (route) => false,
       );
     } catch (e) {
@@ -175,7 +208,12 @@ class _ProfilePageState extends State<ProfilePage> {
       //   title: const Text('Profile'),
       // ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.only(
+          top: 40,
+          right: 20,
+          left: 20,
+          bottom: 20,
+          ),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,6 +234,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: const TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        email,
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.normal,
                         ),
                       ),
                     ],

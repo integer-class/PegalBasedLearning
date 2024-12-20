@@ -1,12 +1,85 @@
+import 'package:expriview/services/api_service.dart';
+import 'package:expriview/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Import untuk SVG
+import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../models/course.dart';
-import 'components/course_card.dart';
-import 'components/secondary_course_card.dart';
+import '../../models/interviewee.dart';
+import '../../models/result.dart';
+import '../results_page.dart';
+import 'components/interviewee_card.dart';
+import 'components/result_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ApiService _apiService = ApiService();
+  final AuthService _authService = AuthService();
+  String username = "Loading...";
+  List<Interviewee> interviewees = [];
+  List<Result> results = [];
+  bool isLoading = true;
+  String? error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInterviewees();
+    _loadResults();
+    loadUsername();
+  }
+
+  Future<void> loadUsername() async {
+    final fetchedUsername =
+        await _authService.fetchUsername(); 
+    setState(() {
+      username = fetchedUsername; 
+    });
+  }
+
+  Future<void> _loadInterviewees() async {
+    try {
+      setState(() {
+        isLoading = true;
+        error = null;
+      });
+
+      final fetchedInterviewees = await _apiService.getInterviewees();
+      setState(() {
+        interviewees = fetchedInterviewees;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _loadResults() async {
+    try {
+      setState(() {
+        isLoading = true;
+        error = null;
+      });
+
+      final fetchedResults = await _apiService.getResults();
+      setState(() {
+        results = fetchedResults;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          "Hi, James",
+                          "Hi, $username",
                           style: Theme.of(context)
                               .textTheme
                               .headlineMedium!
@@ -35,15 +108,15 @@ class HomeScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                               ),
                         ),
-                        const SizedBox(width: 8), // Jarak antara teks dan SVG
+                        const SizedBox(width: 8), 
                         SvgPicture.asset(
                           'assets/icons/hi.svg',
-                          width: 28, // Ukuran SVG
+                          width: 28, 
                           height: 28,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8), // Jarak antara teks
+                    const SizedBox(height: 8), 
                     const Padding(
                       padding: EdgeInsets.only(),
                       child: Text(
@@ -61,10 +134,10 @@ class HomeScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    ...courses.map((course) => Padding(
+                    ...interviewees.map((interviewee) => Padding(
                           padding: const EdgeInsets.only(left: 15),
-                          child: CourseCard(
-                            course: course,
+                          child: IntervieweeCard(
+                            interviewee: interviewee,
                           ),
                         )),
                   ],
@@ -76,8 +149,7 @@ class HomeScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment
-                      .spaceBetween, // Space between "Recent" and "See All"
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       "Recent",
@@ -86,7 +158,11 @@ class HomeScreen extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        // Add your action here when "See All" is pressed
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ResultsPage()),
+                        );
                       },
                       child: const Text(
                         "See All",
@@ -103,11 +179,21 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 5,
               ),
-              ...recentCourses.map(
-                (course) => Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 15),
-                  child: SecondaryCourseCard(course: course),
+              SizedBox(
+                height: 535,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      ...results.map(
+                        (result) => Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 15),
+                          child: ResultCard(result: result),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

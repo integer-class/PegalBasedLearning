@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'recording_page.dart';
 import '../services/api_service.dart';
+import '../models/interviewee.dart';
 
 class StartInterviewPage extends StatefulWidget {
   const StartInterviewPage({super.key});
@@ -70,7 +71,7 @@ class _StartInterviewPageState extends State<StartInterviewPage> {
           IconButton(
             icon: const Icon(Icons.search),
             color: const Color.fromARGB(
-                255, 0, 0, 0), // Set the color of the search icon to blue
+                255, 0, 0, 0), 
             onPressed: () {
               showSearch(
                 context: context,
